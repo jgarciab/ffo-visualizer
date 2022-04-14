@@ -8,6 +8,7 @@
     "build": "parcel build index.html"
   },
   "dependencies": {
+    "@babel/runtime": "^7.17.9",
     "d3": "6.7.0",
     "d3-geo-projection": "4.0.0",
     "danfojs": "1.1.0",
@@ -15,11 +16,16 @@
     "topojson": "3.0.2"
   },
   "devDependencies": {
-    "@babel/core": "7.2.0",
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "parcel-plugin-static-files-copy": "^2.6.0",
     "typescript": "4.4.4"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"
   },
-  "keywords": []
+  "keywords": [],
+  "staticFiles": {
+    "staticPath": "data"
+  }
 }

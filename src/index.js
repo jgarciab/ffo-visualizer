@@ -1,3 +1,4 @@
+import 'regenerator-runtime/runtime';
 import "./styles.css";
 import * as topojson from "topojson";
 import * as d3 from "d3";
@@ -21,7 +22,7 @@ const initialize = async () => {
   );
 
   // Load data
-  const df = await dfd.readCSV("/data/df_medium.csv");
+  const df = await dfd.readCSV("/df_medium.csv");
   df["weight"].describe().print();
   const links = dfd.toJSON(df);
 
