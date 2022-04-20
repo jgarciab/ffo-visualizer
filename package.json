@@ -5,7 +5,8 @@
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html --open",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html",
+    "build_ghpages": "parcel build index.html --public-url /ffo-visualizer"
   },
   "dependencies": {
     "@babel/runtime": "^7.17.9",

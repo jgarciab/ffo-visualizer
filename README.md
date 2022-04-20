@@ -1,3 +1,5 @@
+[![Build & deploy to github pages](https://github.com/States-as-fossil-fuel-owners/ffo-visualizer/actions/workflows/main.yml/badge.svg)](https://github.com/States-as-fossil-fuel-owners/ffo-visualizer/actions/workflows/main.yml)
+
 # Geoflow Visualizer
 
 Visualizes any type of flow between countries.
