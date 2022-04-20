@@ -1,0 +1,1 @@
+{"version":3,"sources":["styles.css"],"names":[],"mappings":"AAAA,KACE,sBACF,CAEA,IACE,WAAY,CACZ,WACF","file":"src.e19d9e13.css","sourceRoot":"..","sourcesContent":["body {\n  font-family: sans-serif;\n}\n\nsvg {\n  width: 800px;\n  height: auto;\n}\n"]}
