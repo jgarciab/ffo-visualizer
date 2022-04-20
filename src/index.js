@@ -60,7 +60,7 @@ const loadMap = () => {
 
   svg = d3
     .select("svg")
-    .attr("viewBox", [0, 0, 960, 400])
+    .attr("viewBox", [0, 0, 960, 420])
     .style("width", "100%")
     .style("height", "auto");
 

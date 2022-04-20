@@ -67,7 +67,7 @@ const avoidLinkOverlaps = (links) => {
   const maxSame = maxSameObj.sameTotal;
   let routes = {};
   links.forEach((d, i) => {
-    d.route.maxSameHalf = 0.5; //Math.floor(maxSame / 3);
+    d.route.maxSameHalf = 0.8; //Math.floor(maxSame / 3);
     routes[i] = d.route;
   });
 
