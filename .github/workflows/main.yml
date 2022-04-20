@@ -6,24 +6,19 @@ on:
 
 jobs:
   build:
-
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install and Build 🔧
         run: |
           npm ci
           npm run build
 
-      # - name: Install rsync 📚  # Required for Deploy when run in container
-      #   run: |
-      #     apt-get update && apt-get install -y rsync
-
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.7
+        uses: JamesIves/github-pages-deploy-action@v4.3.0
         with:
-          branch: gh-pages  # The branch the action should deploy to.
-          folder: build     # The folder the action should deploy.
+          branch: gh-pages # The branch the action should deploy to.
+          folder: build # The folder the action should deploy.
