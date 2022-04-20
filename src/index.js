@@ -14,26 +14,42 @@ document.getElementById("app").innerHTML = `
 </div>
 `;
 
-const initialize = async () => {
+let projection, svg, locMap;
+
+// const updateList = () => {
+//   const dropdown = document.getElementById("source-country");
+//   for (const capital of capitals) {
+//     var option = document.createElement("option");
+//     option.text = capital.CountryName;
+//     option.value = capital.CountryCode;
+//     dropdown.add(option);
+//   }
+// }
+
+const initialize = () => {
+//  updateList();
+
+  loadMap();
+
+  const fileSelector = document.getElementById('fileInput');
+  fileSelector.addEventListener('change', (event) => {
+    const fileList = event.target.files;
+    console.log(fileList);
+    if (fileList.length > 0) {
+      loadData(fileList[0]);
+    }
+  });
+}
+
+const loadMap = () => {
   // Load map
   const countries = topojson.feature(
     worldCountries,
     worldCountries.objects.world_countries_data
   );
 
-  // Load data
-  const df = await dfd.readCSV("/df_medium.csv");
-  df["weight"].describe().print();
-  const links = dfd.toJSON(df);
-
-  //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
-  links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
-  //data.nodes.forEach((d) => !d.weight && (d.weight = 1));
-  links.forEach((d) => !d.weight && (d.weight = 1));
-  //links.forEach((d) => (d.directed = "yes"));
-
   // Generate location map from list of capitals
-  const locMap = capitals.reduce((acc, loc) => {
+  locMap = capitals.reduce((acc, loc) => {
     acc[loc.CountryCode] = [loc.CapitalLongitude, loc.CapitalLatitude];
     return acc;
   }, {});
@@ -42,19 +58,13 @@ const initialize = async () => {
   //   return acc;
   // }, {});
 
-  // console.log(locMap);
-  console.log(links);
-  // links.forEach(
-  //   (d) => (!locMap[d.source] || !locMap[d.target]) && console.log(d)
-  // );
-
-  const svg = d3
+  svg = d3
     .select("svg")
     .attr("viewBox", [0, 0, 960, 400])
     .style("width", "100%")
     .style("height", "auto");
 
-  const projection = d3_geo.geoAitoff();
+  projection = d3_geo.geoAitoff();
   const path = d3.geoPath(projection);
   svg
     .append("path")
@@ -64,7 +74,26 @@ const initialize = async () => {
     .attr("stroke-width", 0.4)
     .attr("d", path);
 
+}
+
+const loadData = async (file) => {
   svg.select(".link").selectAll("*").remove();
+
+  // Load data
+  const df = await dfd.readCSV(file);
+  df["weight"].describe().print();
+  const links = dfd.toJSON(df);
+
+  //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
+  links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
+  //data.nodes.forEach((d) => !d.weight && (d.weight = 1));
+  links.forEach((d) => !d.weight && (d.weight = 1));
+  //links.forEach((d) => (d.directed = "yes"));
+
+  console.log(links);
+  // links.forEach(
+  //   (d) => (!locMap[d.source] || !locMap[d.target]) && console.log(d)
+  // );
 
   visualizeLinks(links, [], projection, svg, locMap);
 };
