@@ -61,10 +61,10 @@ const avoidLinkOverlaps = (links) => {
   });
 
   // maxnimum number of overlaps
-  const maxSameObj = links.reduce((prev, current) => {
-    return current.sameTotal > prev.sameTotal ? current : prev;
-  });
-  const maxSame = maxSameObj.sameTotal;
+  // const maxSameObj = links.reduce((prev, current) => {
+  //   return current.sameTotal > prev.sameTotal ? current : prev;
+  // });
+  //const maxSame = maxSameObj.sameTotal;
   let routes = {};
   links.forEach((d, i) => {
     d.route.maxSameHalf = 0.8; //Math.floor(maxSame / 3);
@@ -172,20 +172,20 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
     });
 
   // Function that update circle position if something change
-  function update() {
-    node.attr(
-      "transform",
-      (d) =>
-        `translate(${projection(locMap[d.id])[0]},${
-          projection(locMap[d.id])[1]
-        })`
-    );
+  // function update() {
+  //   node.attr(
+  //     "transform",
+  //     (d) =>
+  //       `translate(${projection(locMap[d.id])[0]},${
+  //         projection(locMap[d.id])[1]
+  //       })`
+  //   );
 
-    // link.selectAll('.link-path')
-    //      .attr('d', (d,i)=>linkArc(routes[i],
-    //                             projection(locMap[d.source]),
-    //                             projection(locMap[d.target])));
-  }
+  //   // link.selectAll('.link-path')
+  //   //      .attr('d', (d,i)=>linkArc(routes[i],
+  //   //                             projection(locMap[d.source]),
+  //   //                             projection(locMap[d.target])));
+  // }
 };
 
 export { visualizeLinks };
