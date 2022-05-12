@@ -1,32 +1,48 @@
 {
-  "name": "fossil-fuel-owners-prototype",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.html",
-  "scripts": {
-    "start": "parcel index.html --open",
-    "build": "parcel build index.html",
-    "build_ghpages": "parcel build index.html --public-url /ffo-visualizer"
-  },
+  "name": "ffo-visualizer2",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@babel/runtime": "^7.17.9",
-    "d3": "6.7.0",
-    "d3-geo-projection": "4.0.0",
-    "danfojs": "1.1.0",
-    "parcel-bundler": "^1.6.1",
-    "topojson": "3.0.2"
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.2.0",
+    "@testing-library/user-event": "^13.5.0",
+    "d3": "^7.4.4",
+    "d3-geo-projection": "^4.0.0",
+    "danfojs": "^1.1.1",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "react-scripts": "5.0.1",
+    "topojson": "^3.0.2",
+    "web-vitals": "^2.1.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.17.9",
-    "@babel/plugin-transform-runtime": "^7.17.0",
-    "parcel-plugin-static-files-copy": "^2.6.0",
-    "typescript": "4.4.4"
+    "autoprefixer": "^10.4.7",
+    "daisyui": "^2.14.3",
+    "postcss": "^8.4.13",
+    "tailwindcss": "^3.0.24"
   },
-  "resolutions": {
-    "@babel/preset-env": "7.13.8"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "keywords": [],
-  "staticFiles": {
-    "staticPath": "data"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
