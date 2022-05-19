@@ -29,6 +29,13 @@ const getLocationMap = () => {
   }, {});
 }
 
+const getLocationNames = () => {
+  return capitals.reduce((acc, loc) => {
+    acc[loc.CountryCode] = loc.CountryName;
+    return acc;
+  }, {});
+}
+
 const loadData = async (file) => {
   const data = {};
 
@@ -52,4 +59,4 @@ const loadData = async (file) => {
   return data;
 };
 
-export { loadData, getCountryMap, getLocationMap };
+export { loadData, getCountryMap, getLocationMap, getLocationNames };
