@@ -2,11 +2,14 @@ import './App.css';
 import GeoFlowVis from './GeoFlowVis';
 import MultiSelect from './MultiSelect';
 import { getCountryMap, getLocationMap, loadData } from './DataStore';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppContext from './AppContext';
 
 function App() {
   const [data, setData] = useState({ links: [] });
+  const [filteredData, setFilteredData] = useState({ links: [] });
+  const [selectedSources, setSelectedSources] = useState([]);
+  const [selectedTargets, setSelectedTargets] = useState([]);
 
   const countryMap = getCountryMap();
   const locationMap = getLocationMap();
@@ -19,16 +22,25 @@ function App() {
     }
   };
 
+  // updateFilteredData
+  useEffect(() => {
+    const result = {};
+    result.links = data.links.filter(link => selectedSources.includes(link.source));
+    result.links = result.links.filter(link => selectedTargets.includes(link.target));
+    setFilteredData(result);
+  }, [selectedSources, selectedTargets, data]);
+
   const globalData = {
-    data, setData
+    data, setData,
+    filteredData, setFilteredData
   };
 
   return (
     <AppContext.Provider value={globalData}>
       <div className="App">
         <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} />
-        <MultiSelect options={countries} label="Sources" />
-        <MultiSelect options={countries} label="Targets" />
+        <MultiSelect options={countries} label="Sources" onChanged={selection => setSelectedSources(selection)} />
+        <MultiSelect options={countries} label="Targets" onChanged={selection => setSelectedTargets(selection)} />
         <GeoFlowVis countryMap={countryMap}/>
       </div>
     </AppContext.Provider>

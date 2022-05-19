@@ -44,7 +44,7 @@ const loadData = async (file) => {
   //links.forEach((d) => (d.directed = "yes"));
 
   data.links = links;
-  console.log(links);
+  //console.log(links);
   // links.forEach(
   //   (d) => (!locMap[d.source] || !locMap[d.target]) && console.log(d)
   // );

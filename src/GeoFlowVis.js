@@ -7,13 +7,16 @@ import AppContext from './AppContext';
 import { getLocationMap } from './DataStore';
 
 function GeoFlowVis({ countryMap }) {
-  const { data } = useContext(AppContext);
+  const { filteredData } = useContext(AppContext);
 
   const ref = useD3(
     (svg) => {
-      console.log("RENDERING", data);
+      console.log("RENDERING", filteredData);
       const projection = d3_geo.geoAitoff();
       const path = d3.geoPath(projection);
+
+      // Clean up
+      svg.selectAll(".link").remove();
 
       // Render base map
       svg
@@ -25,12 +28,11 @@ function GeoFlowVis({ countryMap }) {
         .attr("d", path);
 
       // Render links
-      if (data.links.length > 0) {
-        svg.selectAll(".link").remove();
-        visualizeLinks(data.links, [], projection, svg, getLocationMap());
+      if (filteredData.links.length > 0) {
+        visualizeLinks(filteredData.links, [], projection, svg, getLocationMap());
       }
     },
-  [data]);
+  [filteredData]);
 
   return (
     <svg
