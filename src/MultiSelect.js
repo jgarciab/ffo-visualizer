@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 const MultiSelect = ({ options, label, selection, onChanged }) => {
   const [filter, setFilter] = useState("");
+  const lowerCaseFilter = filter.toLowerCase();
 
   const updateSelection = (key, selected) => {
     const index = selection.indexOf(key);
@@ -10,7 +11,11 @@ const MultiSelect = ({ options, label, selection, onChanged }) => {
     onChanged && onChanged(newSelOptions);
   }
 
-  const lowerCaseFilter = filter.toLowerCase();
+  // If options are passed as an array, convert it to an object
+  // (also converts values to string)
+  if (Array.isArray(options)) {
+    options = options.reduce((obj, val) => {obj[val] = val.toString(); return obj}, {});
+  }
 
   return (<div className="dropdown">
     <label tabIndex="0" className="btn m-1">{label}</label>

@@ -42,6 +42,20 @@ const loadData = async (file) => {
   // Load data
   const df = await dfd.readCSV(file);
   df["weight"].describe().print();
+  
+  // Determine categories
+  data.categories = [];
+  console.log(df.columns);
+  for (const column of df.columns) {
+    if (!['source', 'target', 'weight'].includes(column)) {
+      data.categories.push({
+        name: column,
+        values: df[column].unique().sortValues().values.map(val => val.toString())
+      });
+    }
+  }
+
+  // Links
   const links = dfd.toJSON(df);
 
   //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
