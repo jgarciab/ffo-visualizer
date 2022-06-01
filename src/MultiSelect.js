@@ -17,16 +17,22 @@ const MultiSelect = ({ options, label, selection, onChanged }) => {
     options = options.reduce((obj, val) => {obj[val] = val.toString(); return obj}, {});
   }
 
-  return (<div className="dropdown">
-    <label tabIndex="0" className="btn m-1">{label}</label>
-    <div className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 h-96 overflow-y-auto">
+  let summary;
+  if (selection.length === 0) summary = "none";
+  else if (selection.length === Object.keys(options).length) summary = "all";
+  else summary = `${selection.length} of ${Object.keys(options).length}`;
+
+  return (<div tabIndex="0" className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+    <input type="checkbox" /> { /* to enable hiding */ }
+    <div className="collapse-title text-lg font-medium">{label} <span className="text-sm text-gray-400">({summary})</span></div>
+    <div className="collapse-content pd-2 h-96 overflow-y-auto">
       <div className="grid grid-cols-2 divide-x">
         <button className="btn m-1" onClick={() => onChanged(Object.keys(options))}>All</button>
         <button className="btn m-1" onClick={() => onChanged([])}>None</button>
       </div>
       <input className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-3 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"
         type="search" placeholder="Filter..." onChange={e => setFilter(e.target.value)} ></input>
-      <ul tabIndex="0">
+      <ul tabIndex="0" className="text-left">
         { Object.keys(options).map(key => (
           (filter === "" || options[key].toLowerCase().includes(lowerCaseFilter)) && <li key={key}><label>
             <input type="checkbox" className="checkbox" checked={selection.includes(key)}
@@ -34,7 +40,7 @@ const MultiSelect = ({ options, label, selection, onChanged }) => {
         )) }
       </ul>
     </div>
-    </div>);
+  </div>);
 
 }
 

@@ -77,14 +77,18 @@ function App() {
 
   return (
     <AppContext.Provider value={globalData}>
-      <div className="App">
-        <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} />
-        <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
-        <MultiSelect label="Targets" options={usedLocations} selection={selectedTargets} onChanged={selection => setSelectedTargets(selection)} />
-        { data.categories.map(category => (
-          <MultiSelect label={category.name} options={category.values} selection={selectedCategories[category.name] || []} onChanged={selection => changeCategorySelection(category, selection)} />
-        ))}
-        <GeoFlowVis countryMap={countryMap}/>
+      <div className="App flex mb-4">
+        <div className="w-1/4">
+          <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} />
+          <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
+          <MultiSelect label="Targets" options={usedLocations} selection={selectedTargets} onChanged={selection => setSelectedTargets(selection)} />
+          { data.categories.map(category => (
+            <MultiSelect key={category.name} label={category.name} options={category.values} selection={selectedCategories[category.name] || []} onChanged={selection => changeCategorySelection(category, selection)} />
+          ))}
+        </div>
+        <div className="w-3/4">
+          <GeoFlowVis countryMap={countryMap}/>
+        </div>
       </div>
     </AppContext.Provider>
   );

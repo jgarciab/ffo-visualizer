@@ -45,7 +45,6 @@ const loadData = async (file) => {
   
   // Determine categories
   data.categories = [];
-  console.log(df.columns);
   for (const column of df.columns) {
     if (!['source', 'target', 'weight'].includes(column)) {
       data.categories.push({
