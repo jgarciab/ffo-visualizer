@@ -42,7 +42,7 @@ function GeoFlowVis({ countryMap }) {
         height: "auto",
       }}
       viewBox={[0, 0, 960, 420]}
-      transform="translate(-80, 60) scale(1.3)"
+      transform="translate(-80, 70) scale(1.3)"
     >
       <path className="map" />
       <g className="links" />

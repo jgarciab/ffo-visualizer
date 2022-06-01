@@ -26,13 +26,24 @@ const getLocationNames = () => {
   }, {});
 }
 
+const createEmptyData = () => { return { links: [], totals: [], categories: [] }};
+
 const loadData = async (file) => {
   const data = {};
 
   // Load data
-  const df = await dfd.readCSV(file);
-  df["weight"].describe().print();
+  let df = await dfd.readCSV(file);
+
+  // Merge duplicates //TODO: remove, because hard-coded?
+  df = df.groupby(['source', 'target', 'NACE', 'NAICS']).col(['weight']).sum();
+  df.rename({ 'weight_sum': 'weight' }, { inplace: true });
   
+  // Calculate country totals
+  const dfTotals = df.groupby(['source']).col(['weight']).sum()
+  dfTotals.rename({ 'weight_sum': 'weight' }, { inplace: true });
+  dfTotals.sortValues('weight', { ascending: false, inplace: true });
+  data.totals = dfd.toJSON(dfTotals);
+
   // Determine categories
   data.categories = [];
   for (const column of df.columns) {
@@ -62,4 +73,4 @@ const loadData = async (file) => {
   return data;
 };
 
-export { loadData, getCountryMap, getLocationMap, getLocationNames };
+export { createEmptyData, loadData, getCountryMap, getLocationMap, getLocationNames };
