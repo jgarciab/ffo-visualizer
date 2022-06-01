@@ -4,16 +4,6 @@ import capitals from './data/country-capitals.json';
 import worldCountries from './data/world_countries_neocarto.json';
 
 
-// const updateList = () => {
-//   const dropdown = document.getElementById("source-country");
-//   for (const capital of capitals) {
-//     var option = document.createElement("option");
-//     option.text = capital.CountryName;
-//     option.value = capital.CountryCode;
-//     dropdown.add(option);
-//   }
-// }
-
 const getCountryMap = () => {
   return topojson.feature(
     worldCountries,

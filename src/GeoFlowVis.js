@@ -22,7 +22,7 @@ function GeoFlowVis({ countryMap }) {
       svg
         .select(".map")
         .datum(countryMap)
-        .attr("fill", "#ed87c8")
+        .attr("fill", "#b5b1a7")
         .attr("stroke", "white")
         .attr("stroke-width", 0.4)
         .attr("d", path);
@@ -42,6 +42,7 @@ function GeoFlowVis({ countryMap }) {
         height: "auto",
       }}
       viewBox={[0, 0, 960, 420]}
+      transform="translate(-80, 60) scale(1.3)"
     >
       <path className="map" />
       <g className="links" />
