@@ -34,6 +34,16 @@ const loadData = async (file) => {
   // Load data
   let df = await dfd.readCSV(file);
 
+  // Some validation
+  // Check if there is data
+  if (df.shape[0] <= 1 && df.shape[1] <= 1) {
+    throw new Error("No data found in file");
+  }
+  // Check if the required columns are present
+  if (!['source', 'target', 'weight'].reduce((found, column) => found && df.columns.includes(column), true)) {
+    throw new Error("One or more required columns ('source', 'target', 'weight') not found");
+  }
+
   // Merge duplicates //TODO: remove, because hard-coded?
   df = df.groupby(['source', 'target', 'NACE', 'NAICS']).col(['weight']).sum();
   df.rename({ 'weight_sum': 'weight' }, { inplace: true });

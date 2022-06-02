@@ -25,11 +25,19 @@ function App() {
   // The data after being filtered for sources/targets/categories
   const [filteredData, setFilteredData] = useState(createEmptyData());
 
+  // Error object to display in dialog
+  const [error, setError] = useState();
+
   // Handle file selection
   const onFileChanged = async (event) => {
     const fileList = event.target.files;
     if (fileList.length > 0) {
-      setData(await loadData(fileList[0]));
+      try {
+        setData(await loadData(fileList[0]));
+      }
+      catch(e) {
+        setError(e);
+      }
     }
   };
 
@@ -82,6 +90,7 @@ function App() {
 
   return (
     <AppContext.Provider value={globalData} data-theme="lemonade">
+
       <div className="App flex mb-4">
         <div className="w-1/4 z-30">
           <div className="border border-base-300 bg-base-100 rounded-box p-4">
@@ -98,10 +107,24 @@ function App() {
           ))}
           <span>Showing {filteredData.links.length} links</span>
         </div>
+
         <div className="w-3/4 z-0">
           <GeoFlowVis countryMap={countryMap}/>
         </div>
       </div>
+
+      { error && ( // Error dialog
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">{error.name}</h3>
+            <p className="py-4">{error.message}</p>
+            <div className="modal-action">
+              <button className="btn" onClick={() => setError(undefined)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </AppContext.Provider>
   );
 }
