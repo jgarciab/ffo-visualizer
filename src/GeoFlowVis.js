@@ -45,7 +45,6 @@ function GeoFlowVis({ countryMap }) {
       transform="translate(-80, 70) scale(1.3)"
     >
       <path className="map" />
-      <g className="links" />
     </svg>
   );
 }

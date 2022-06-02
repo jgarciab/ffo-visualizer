@@ -44,6 +44,9 @@ const loadData = async (file) => {
   dfTotals.sortValues('weight', { ascending: false, inplace: true });
   data.totals = dfd.toJSON(dfTotals);
 
+  // df = df.groupby(['source', 'target']).col(['weight']).sum();
+  // df.rename({ 'weight_sum': 'weight' }, { inplace: true });
+
   // Determine categories
   data.categories = [];
   for (const column of df.columns) {
@@ -62,7 +65,7 @@ const loadData = async (file) => {
   links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
   //data.nodes.forEach((d) => !d.weight && (d.weight = 1));
   links.forEach((d) => !d.weight && (d.weight = 1));
-  //links.forEach((d) => (d.directed = "yes"));
+  links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
 
   data.links = links;
   //console.log(links);

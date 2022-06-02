@@ -4,7 +4,7 @@ const linkColor = (links) => {
   let linkTypes = [...new Set(links.map((d) => d.type))];
   const scale = d3
     .scaleOrdinal()
-    .range(linkTypes.length === 1 ? ["#616161"] : d3.schemeCategory10);
+    .range(linkTypes.length === 1 ? ["#a17161"] : d3.schemeCategory10);
   return (d) => scale(d.type);
 };
 
@@ -74,9 +74,9 @@ const avoidLinkOverlaps = (links) => {
   return routes;
 };
 
-const linkArc = (d, t, s) => {
-  let [tx, ty] = t;
+const linkArc = (d, s, t) => {
   let [sx, sy] = s;
+  let [tx, ty] = t;
   var dx = tx - sx,
     dy = ty - sy,
     dr = Math.sqrt(dx * dx + dy * dy),
@@ -111,10 +111,10 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
     .attr("class", "marker")
     .attr("orient", "auto")
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 18)
+    .attr("refX", 8)
     .attr("refY", 0)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
+    .attr("markerWidth", 4)
+    .attr("markerHeight", 4)
     .attr("markerUnits", "strokeWidth")
     .attr("opacity", 1.0)
     .append("path")
@@ -129,7 +129,7 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
     .attr("fill", "none")
     .attr("stroke-width", (d) => logScale(d.weight))
     .attr("stroke", linkColor(links))
-    .attr("opacity", 0.2)
+    .attr("opacity", 0.5)
     .attr("marker-end", (d) =>
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
     )
@@ -141,35 +141,35 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
       )
     );
 
-  const node = svg
-    .append("g")
-    .selectAll(".node")
-    .data(nodes)
-    .join("g")
-    .attr("class", "node")
-    .attr("transform", (d) => {
-      return `translate(${projection(locMap[d.id])[0]},${
-        projection(locMap[d.id])[1]
-      })`;
-    });
+  // const node = svg
+  //   .append("g")
+  //   .selectAll(".node")
+  //   .data(nodes)
+  //   .join("g")
+  //   .attr("class", "node")
+  //   .attr("transform", (d) => {
+  //     return `translate(${projection(locMap[d.id])[0]},${
+  //       projection(locMap[d.id])[1]
+  //     })`;
+  //   });
 
-  node
-    .selectAll("circle")
-    .data((d) => [d])
-    .join("circle")
-    .attr("stroke", nodeColor(nodes))
-    .attr("r", 4)
-    .attr("stroke-width", 2)
-    .attr("fill", "white");
+  // node
+  //   .selectAll("circle")
+  //   .data((d) => [d])
+  //   .join("circle")
+  //   .attr("stroke", nodeColor(nodes))
+  //   .attr("r", 4)
+  //   .attr("stroke-width", 2)
+  //   .attr("fill", "white");
 
-  node
-    .selectAll("text")
-    .data((d) => [d])
-    .join("text")
-    .append("title")
-    .text(function (d) {
-      return d.id;
-    });
+  // node
+  //   .selectAll("text")
+  //   .data((d) => [d])
+  //   .join("text")
+  //   .append("title")
+  //   .text(function (d) {
+  //     return d.id;
+  //   });
 
   // Function that update circle position if something change
   // function update() {
