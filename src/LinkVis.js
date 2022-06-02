@@ -8,13 +8,13 @@ const linkColor = (links) => {
   return (d) => scale(d.type);
 };
 
-const nodeColor = (nodes) => {
-  let nodeTypes = [...new Set(nodes.map((d) => d.type))];
-  const scale = d3
-    .scaleOrdinal()
-    .range(nodeTypes.length === 1 ? ["#616161"] : d3.schemeCategory10);
-  return (d) => scale(d.type);
-};
+// const nodeColor = (nodes) => {
+//   let nodeTypes = [...new Set(nodes.map((d) => d.type))];
+//   const scale = d3
+//     .scaleOrdinal()
+//     .range(nodeTypes.length === 1 ? ["#616161"] : d3.schemeCategory10);
+//   return (d) => scale(d.type);
+// };
 
 const avoidLinkOverlaps = (links) => {
   // handle overlapping links
