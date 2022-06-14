@@ -33,6 +33,7 @@ const loadData = async (file) => {
 
   // Load data
   let df = await dfd.readCSV(file);
+  df.dropNa({ axis: 1, inplace: true }); // remove rows with missing values
 
   // Some validation
   // Check if there is data
@@ -44,8 +45,11 @@ const loadData = async (file) => {
     throw new Error("One or more required columns ('source', 'target', 'weight') not found");
   }
 
-  // Merge duplicates //TODO: remove, because hard-coded?
-  df = df.groupby(['source', 'target', 'NACE', 'NAICS']).col(['weight']).sum();
+  // Merge duplicates (and sum weights)
+  // TODO: this only applies if the data is not so well structured,
+  // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
+  const columns = df.columns.filter(item => item !== 'weight');
+  df = df.groupby(columns).col(['weight']).sum();
   df.rename({ 'weight_sum': 'weight' }, { inplace: true });
   
   // Calculate country totals
@@ -54,6 +58,7 @@ const loadData = async (file) => {
   dfTotals.sortValues('weight', { ascending: false, inplace: true });
   data.totals = dfd.toJSON(dfTotals);
 
+  // Group and aggregate by source-&-target
   // df = df.groupby(['source', 'target']).col(['weight']).sum();
   // df.rename({ 'weight_sum': 'weight' }, { inplace: true });
 
