@@ -4,6 +4,10 @@
 
 Visualizes any type of flow between countries.
 
+# Demo
+
+The latest version of this tool is available at [https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/](https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/)
+
 ## Requirements
 
 Nodejs + npm
