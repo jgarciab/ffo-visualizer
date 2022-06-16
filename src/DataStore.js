@@ -55,6 +55,11 @@ const loadData = async (file) => {
   // Sort by weight of connections
   let dfSorted = df.sortValues('weight', { ascending: false });
   dfSorted = dfSorted.query(dfSorted['source'].ne(dfSorted['target']));
+  df = dfSorted;
+
+  // Min/max weights
+  data.minWeight = dfSorted['weight'].min();
+  data.maxWeight = dfSorted['weight'].max();
   
   // Calculate country totals
   const dfTotals = df.groupby(['source']).col(['weight']).sum()

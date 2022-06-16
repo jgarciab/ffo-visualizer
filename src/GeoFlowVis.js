@@ -29,7 +29,7 @@ function GeoFlowVis({ countryMap }) {
 
       // Render links
       if (filteredData.links.length > 0) {
-        visualizeLinks(filteredData.links, [], projection, svg, getLocationMap());
+        visualizeLinks(filteredData, projection, svg, getLocationMap());
       }
     },
   [filteredData]);

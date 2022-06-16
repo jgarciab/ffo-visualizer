@@ -50,7 +50,7 @@ function App() {
 
   // updateFilteredData
   useEffect(() => {
-    const result = {};
+    const result = { ...data };
     result.links = data.links.slice(0, topN); // Only select topN links
     result.links = result.links.filter(link => selectedSources.includes(link.source));
     result.links = result.links.filter(link => selectedTargets.includes(link.target));

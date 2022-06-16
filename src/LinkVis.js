@@ -4,7 +4,7 @@ const linkColor = (links) => {
   let linkTypes = [...new Set(links.map((d) => d.type))];
   const scale = d3
     .scaleOrdinal()
-    .range(linkTypes.length === 1 ? ["#a17161"] : d3.schemeCategory10);
+    .range(linkTypes.length === 1 ? ["#ff9100"] : d3.schemeCategory10);
   return (d) => scale(d.type);
 };
 
@@ -90,9 +90,11 @@ const linkArc = (d, s, t) => {
   }
 };
 
-const logScale = d3.scaleLog().domain([7792819, 36226405800]).range([0.2, 5.0]);
 
-const visualizeLinks = (links, nodes, projection, svg, locMap) => {
+const visualizeLinks = (data, projection, svg, locMap) => {
+  const logScale = d3.scaleLog().domain([data.minWeight, data.maxWeight]).range([0.2, 7.0]);
+
+  const links = data.links;
   const routes = avoidLinkOverlaps(links);
 
   const link = svg
@@ -102,24 +104,62 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
     .join("g")
     .attr("class", "link");
 
-  link
+  const defs = link
     .selectAll("defs")
     .data((d) => [d])
-    .join("defs")
+    .join("defs");
+
+  defs
     .append("marker")
     .attr("id", (d) => `marker-${d.id}`)
     .attr("class", "marker")
     .attr("orient", "auto")
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 8)
+    .attr("refX", 4)
     .attr("refY", 0)
-    .attr("markerWidth", 4)
-    .attr("markerHeight", 4)
-    .attr("markerUnits", "strokeWidth")
+    .attr("markerWidth", 8)
+    .attr("markerHeight", 8)
+    .attr("markerUnits", "userSpaceOnUse")
     .attr("opacity", 1.0)
     .append("path")
     .attr("d", "M0,-5L10,0L0,5")
     .attr("fill", linkColor(links));
+
+  defs
+    .append("marker")
+    .attr("id", (d) => `marker-shadow-${d.id}`)
+    .attr("class", "marker")
+    .attr("orient", "auto")
+    .attr("viewBox", "0 -5 10 10")
+    .attr("refX", 4)
+    .attr("refY", 0)
+    .attr("markerWidth", 10)
+    .attr("markerHeight", 10)
+    .attr("markerUnits", "userSpaceOnUse")
+    .attr("opacity", 1.0)
+    .append("path")
+    .attr("d", "M0,-5L10,0L0,5")
+    .attr("fill", "#000");
+
+  link
+    .selectAll(".link-path-shadow")
+    .data((d) => [d])
+    .join("path")
+    .attr("class", "link-path-shadow")
+    .attr("fill", "none")
+    .attr("stroke-width", (d) => logScale(d.weight) + 1)
+    .attr("stroke", "#000")
+    .attr("opacity", 0.7)
+    .attr("marker-end", (d) =>
+      d.directed === "yes" ? `url(#marker-shadow-${d.id})` : undefined
+    )
+    .attr("d", (d, i) =>
+      linkArc(
+        routes[i],
+        projection(locMap[d.source]),
+        projection(locMap[d.target])
+      )
+    );
 
   link
     .selectAll(".link-path")
@@ -129,7 +169,7 @@ const visualizeLinks = (links, nodes, projection, svg, locMap) => {
     .attr("fill", "none")
     .attr("stroke-width", (d) => logScale(d.weight))
     .attr("stroke", linkColor(links))
-    .attr("opacity", 0.5)
+    .attr("opacity", 1.0)
     .attr("marker-end", (d) =>
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
     )
