@@ -51,6 +51,10 @@ const loadData = async (file) => {
   const columns = df.columns.filter(item => item !== 'weight');
   df = df.groupby(columns).col(['weight']).sum();
   df.rename({ 'weight_sum': 'weight' }, { inplace: true });
+
+  // Sort by weight of connections
+  let dfSorted = df.sortValues('weight', { ascending: false });
+  dfSorted = dfSorted.query(dfSorted['source'].ne(dfSorted['target']));
   
   // Calculate country totals
   const dfTotals = df.groupby(['source']).col(['weight']).sum()
@@ -74,7 +78,7 @@ const loadData = async (file) => {
   }
 
   // Links
-  const links = dfd.toJSON(df);
+  const links = dfd.toJSON(dfSorted);
 
   //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
   links.forEach((d, i) => !d.id && (d.id = `link-${i}`));

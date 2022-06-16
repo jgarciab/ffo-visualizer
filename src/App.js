@@ -51,9 +51,7 @@ function App() {
   // updateFilteredData
   useEffect(() => {
     const result = {};
-    result.links = data.links;
-    const topNSources = data.totals.slice(0, topN).map(el => el.source);
-    result.links = result.links.filter(link => topNSources.includes(link.source));
+    result.links = data.links.slice(0, topN); // Only select topN links
     result.links = result.links.filter(link => selectedSources.includes(link.source));
     result.links = result.links.filter(link => selectedTargets.includes(link.target));
     Object.keys(selectedCategories).forEach(key => {
@@ -88,6 +86,8 @@ function App() {
     filteredData, setFilteredData
   };
 
+  const totalLinks = data.links.length;
+
   return (
     <AppContext.Provider value={globalData} data-theme="lemonade">
 
@@ -97,8 +97,8 @@ function App() {
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} />
           </div>
           <div className="border border-base-300 bg-base-100 rounded-box p-4">
-            <span>Top {topN} countries</span>
-            <input type="range" className="range" min="1" max="100" step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
+            <span>Top {topN}/{totalLinks} connections</span>
+            <input type="range" className="range" min="1" max={totalLinks} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
           </div>
           <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
           <MultiSelect label="Targets" options={usedLocations} selection={selectedTargets} onChanged={selection => setSelectedTargets(selection)} />
