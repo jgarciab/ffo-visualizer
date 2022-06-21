@@ -4,6 +4,7 @@ import MultiSelect from './MultiSelect';
 import { createEmptyData, getCountryMap, getLocationNames, loadData } from './DataStore';
 import React, { useState, useEffect } from 'react';
 import AppContext from './AppContext';
+import CountryTotals from './CountryTotals';
 
 function App() {
   // Pre-loaded (static) locations and map
@@ -93,6 +94,8 @@ function App() {
 
       <div className="App flex mb-4">
         <div className="w-1/4 z-30">
+
+          {/* Side bar */}
           <div className="border border-base-300 bg-base-100 rounded-box p-4">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} />
           </div>
@@ -107,13 +110,24 @@ function App() {
           ))}
           <span>Showing {filteredData.links.length} links</span>
         </div>
-
+        
+        {/* Main content */}
         <div className="w-3/4 z-0">
-          <GeoFlowVis countryMap={countryMap}/>
+
+          {/* Map visualization */}
+          <div className="">
+            <GeoFlowVis countryMap={countryMap}/>
+          </div>
+
+          {/* Bar chart */}
+          <div className="overflow-x-scroll">
+            <CountryTotals />
+          </div>
         </div>
       </div>
 
-      { error && ( // Error dialog
+      {/* Error dialog */}
+      { error && (
         <div className="modal modal-open">
           <div className="modal-box">
             <h3 className="font-bold text-lg">{error.name}</h3>

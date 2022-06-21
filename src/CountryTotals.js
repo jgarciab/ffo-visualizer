@@ -1,0 +1,40 @@
+import { useD3 } from './hooks/useD3';
+import React, { useContext } from 'react';
+import AppContext from './AppContext';
+import BarChart from './BarChart';
+
+function CountryTotals() {
+  const { data } = useContext(AppContext);
+  const totals = data.totals;
+  const width = totals.length * 28 + 100;
+
+  const ref = useD3(
+    (svg) => {
+      console.log("BARCHART", totals);
+
+      // Clean up
+      svg.selectAll("*").remove();
+
+      BarChart(svg, totals, {
+        x: d => d.source,
+        y: d => d.weight,
+        width: width,
+        marginLeft: 90,
+        color: 'steelblue'
+      });
+    },
+  [data]);
+
+  return (
+    <svg
+      ref={ref}
+      style={{
+        width: width,
+        height: "420"
+      }}
+    >
+    </svg>
+  );
+}
+
+export default CountryTotals;

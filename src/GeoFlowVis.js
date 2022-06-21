@@ -39,10 +39,9 @@ function GeoFlowVis({ countryMap }) {
       ref={ref}
       style={{
         width: "100%",
-        height: "auto",
+        height: "100%",
       }}
-      viewBox={[0, 0, 960, 420]}
-      transform="translate(-80, 70) scale(1.3)"
+      viewBox={[160, 0, 800, 420]}
     >
       <path className="map" />
     </svg>
