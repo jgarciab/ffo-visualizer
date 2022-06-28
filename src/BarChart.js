@@ -81,7 +81,12 @@ function BarChart(svg, data, {
 
   svg.append("g")
       .attr("transform", `translate(0,${height - marginBottom})`)
-      .call(xAxis);
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "start")
+      .attr("dx", "1em")
+      .attr("dy", "-0.5em")
+      .attr("transform", "rotate(90)");
 }
 
 export default BarChart;

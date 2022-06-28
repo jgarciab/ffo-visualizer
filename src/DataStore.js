@@ -45,32 +45,6 @@ const loadData = async (file) => {
     throw new Error("One or more required columns ('source', 'target', 'weight') not found");
   }
 
-  // Merge duplicates (and sum weights)
-  // TODO: this only applies if the data is not so well structured,
-  // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
-  const columns = df.columns.filter(item => item !== 'weight');
-  df = df.groupby(columns).col(['weight']).sum();
-  df.rename({ 'weight_sum': 'weight' }, { inplace: true });
-
-  // Sort by weight of connections
-  let dfSorted = df.sortValues('weight', { ascending: false });
-  dfSorted = dfSorted.query(dfSorted['source'].ne(dfSorted['target']));
-  df = dfSorted;
-
-  // Min/max weights
-  data.minWeight = dfSorted['weight'].min();
-  data.maxWeight = dfSorted['weight'].max();
-  
-  // Calculate country totals
-  const dfTotals = df.groupby(['source']).col(['weight']).sum()
-  dfTotals.rename({ 'weight_sum': 'weight' }, { inplace: true });
-  dfTotals.sortValues('weight', { ascending: false, inplace: true });
-  data.totals = dfd.toJSON(dfTotals);
-
-  // Group and aggregate by source-&-target
-  // df = df.groupby(['source', 'target']).col(['weight']).sum();
-  // df.rename({ 'weight_sum': 'weight' }, { inplace: true });
-
   // Determine categories
   data.categories = [];
   for (const column of df.columns) {
@@ -82,9 +56,56 @@ const loadData = async (file) => {
     }
   }
 
-  // Links
-  const links = dfd.toJSON(dfSorted);
+  // Merge duplicates (and sum weights)
+  // TODO: this only applies if the data is not so well structured,
+  // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
+  const columns = df.columns.filter(item => item !== 'weight');
+  df = df.groupby(columns).col(['weight']).sum();
+  df.rename({ 'weight_sum': 'weight' }, { inplace: true });
 
+  // Sort by weight of connections
+  df = df.sortValues('weight', { ascending: false });
+
+  // Look up and add full location names to data points
+  const locationNames = getLocationNames();
+  const sourceNames = df['source'].apply(v => locationNames[v], { axis: 1 });
+  const targetNames = df['target'].apply(v => locationNames[v], { axis: 1 });
+  df.addColumn('sourceName', sourceNames, { inplace: true });
+  df.addColumn('targetName', targetNames, { inplace: true });
+  // const scaledWeight = df['weight'].apply(v => v / 1000000000, { axis: 1 });
+  // df.rename({ 'weight': 'oldweight' }, { inplace: true });
+  // df.addColumn('weight', scaledWeight, { inplace: true });
+
+  let dfLinkToSelf = df.query(df['source'].eq(df['target']));
+  let dfLinkToOther = df.query(df['source'].ne(df['target']));
+
+  // Min/max weights
+  data.minWeight = dfLinkToOther['weight'].min();
+  data.maxWeight = dfLinkToOther['weight'].max();
+  
+  // Calculate country totals
+  let dfTotals = df.groupby(['source', 'sourceName']).col(['weight']).sum();
+  dfTotals.rename({ 'weight_sum': 'weight_total' }, { inplace: true });
+  dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
+
+  const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col(['weight']).sum();
+  dfTotalsSelf.rename({ 'weight_sum': 'weight_self' }, { inplace: true });
+  const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col(['weight']).sum();
+  dfTotalsOther.rename({ 'weight_sum': 'weight_other' }, { inplace: true });
+
+  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
+  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
+  data.totals = dfd.toJSON(dfTotals);
+  console.log(data.totals);
+
+  // Group and aggregate by source-&-target
+  // df = df.groupby(['source', 'target']).col(['weight']).sum();
+  // df.rename({ 'weight_sum': 'weight' }, { inplace: true });
+
+  // Links
+  const links = dfd.toJSON(df);
+
+  // Some additional processing
   //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
   links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
   //data.nodes.forEach((d) => !d.weight && (d.weight = 1));

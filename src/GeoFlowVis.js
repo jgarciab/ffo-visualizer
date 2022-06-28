@@ -1,5 +1,5 @@
 import { useD3 } from './hooks/useD3';
-import React, { useContext } from 'react';
+import React, { Fragment, useContext, useState } from 'react';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
@@ -8,6 +8,13 @@ import { getLocationMap } from './DataStore';
 
 function GeoFlowVis({ countryMap }) {
   const { filteredData } = useContext(AppContext);
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipData, setTooltipData] = useState({});
+
+  const showTooltip = (event, data) => {
+    setTooltipVisible(true);
+    setTooltipData(data);
+  }
 
   const ref = useD3(
     (svg) => {
@@ -29,12 +36,13 @@ function GeoFlowVis({ countryMap }) {
 
       // Render links
       if (filteredData.links.length > 0) {
-        visualizeLinks(filteredData, projection, svg, getLocationMap());
+        visualizeLinks(filteredData, projection, svg, getLocationMap(), showTooltip);
       }
     },
   [filteredData]);
 
   return (
+    <Fragment>
     <svg
       ref={ref}
       style={{
@@ -45,6 +53,11 @@ function GeoFlowVis({ countryMap }) {
     >
       <path className="map" />
     </svg>
+<div class="tooltip" style={{visibility: tooltipVisible ? 'visible' : 'hidden'}}>Source: {tooltipData.sourceName}<br />
+Target: {tooltipData.targetName}<br />
+Weight: {tooltipData.weight}
+</div>
+    </Fragment>
   );
 }
 
