@@ -38,6 +38,7 @@ function App() {
       }
       catch(e) {
         setError(e);
+        console.log(e);
       }
     }
   };
@@ -72,7 +73,7 @@ function App() {
     }
     setUsedLocations(result);
 
-    // Buy default, select all sources, targets and categories
+    // By default, select all sources, targets and categories
     setSelectedSources(Object.keys(result));
     setSelectedTargets(Object.keys(result));
     setSelectedCategories(data.categories.reduce((selectionObj, category) => {

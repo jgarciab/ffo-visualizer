@@ -183,6 +183,8 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     );
 
     link.on("mouseover", toolTipHandler);
+    link.on("mouseout", toolTipHandler);
+
   // link.append("title")
   //   .datum(d => d)
   //   .text(d => JSON.stringify(d));

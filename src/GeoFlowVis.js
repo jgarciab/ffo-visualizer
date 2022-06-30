@@ -8,12 +8,13 @@ import { getLocationMap } from './DataStore';
 
 function GeoFlowVis({ countryMap }) {
   const { filteredData } = useContext(AppContext);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipData, setTooltipData] = useState({});
+  const [tooltipData, setTooltipData] = useState(null);
 
   const showTooltip = (event, data) => {
-    setTooltipVisible(true);
-    setTooltipData(data);
+    setTooltipData(event.type === 'mouseout' ? null : {
+      ...data,
+      top: event.clientY + 16,
+      left: event.clientX + 16});
   }
 
   const ref = useD3(
@@ -43,20 +44,23 @@ function GeoFlowVis({ countryMap }) {
 
   return (
     <Fragment>
-    <svg
-      ref={ref}
-      style={{
-        width: "100%",
-        height: "100%",
-      }}
-      viewBox={[160, 0, 800, 420]}
-    >
-      <path className="map" />
-    </svg>
-<div class="tooltip" style={{visibility: tooltipVisible ? 'visible' : 'hidden'}}>Source: {tooltipData.sourceName}<br />
-Target: {tooltipData.targetName}<br />
-Weight: {tooltipData.weight}
-</div>
+      <svg
+        ref={ref}
+        style={{
+          width: "100%",
+          height: "100%",
+        }}
+        viewBox={[160, 0, 800, 420]}>
+        <path className="map" />
+      </svg>
+      <div className="tooltip" style={{
+          top: tooltipData ? `${tooltipData.top}px` : 0,
+          left: tooltipData ? `${tooltipData.left}px` : 0,
+          visibility: tooltipData ? 'visible' : 'hidden'}}>
+        Source: {tooltipData && tooltipData.sourceName}<br />
+        Target: {tooltipData && tooltipData.targetName}<br />
+        Weight: {tooltipData && tooltipData.weight}
+      </div>
     </Fragment>
   );
 }
