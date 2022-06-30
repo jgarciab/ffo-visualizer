@@ -91,9 +91,8 @@ const linkArc = (d, s, t) => {
 };
 
 
-const visualizeLinks = (data, projection, svg, locMap) => {
-  const logScale = d3.scaleLog().domain([data.minWeight, data.maxWeight]).range([0.2, 7.0]);
-
+const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
+  const logScale = d3.scaleLog().domain([Math.max(1, data.minWeight), data.maxWeight]).range([0.2, 6.0]);
   const links = data.links;
   const routes = avoidLinkOverlaps(links);
 
@@ -180,6 +179,14 @@ const visualizeLinks = (data, projection, svg, locMap) => {
         projection(locMap[d.target])
       )
     );
+
+    link.on("mouseover", toolTipHandler);
+    link.on("mouseout", toolTipHandler);
+
+  // link.append("title")
+  //   .datum(d => d)
+  //   .text(d => JSON.stringify(d));
+
 
   // const node = svg
   //   .append("g")

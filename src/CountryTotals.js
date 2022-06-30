@@ -16,8 +16,8 @@ function CountryTotals() {
       svg.selectAll("*").remove();
 
       BarChart(svg, totals, {
-        x: d => d.source,
-        y: d => d.weight,
+        x: d => d.sourceName,
+        y: d => d.weight_total,
         width: width,
         marginLeft: 90,
         color: 'steelblue'

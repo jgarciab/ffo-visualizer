@@ -33,7 +33,9 @@ const loadData = async (file) => {
 
   // Load data
   let df = await dfd.readCSV(file);
-  df.dropNa({ axis: 1, inplace: true }); // remove rows with missing values
+
+  // Remove rows with missing values
+  df.dropNa({ axis: 1, inplace: true });
 
   // Some validation
   // Check if there is data
@@ -44,32 +46,6 @@ const loadData = async (file) => {
   if (!['source', 'target', 'weight'].reduce((found, column) => found && df.columns.includes(column), true)) {
     throw new Error("One or more required columns ('source', 'target', 'weight') not found");
   }
-
-  // Merge duplicates (and sum weights)
-  // TODO: this only applies if the data is not so well structured,
-  // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
-  const columns = df.columns.filter(item => item !== 'weight');
-  df = df.groupby(columns).col(['weight']).sum();
-  df.rename({ 'weight_sum': 'weight' }, { inplace: true });
-
-  // Sort by weight of connections
-  let dfSorted = df.sortValues('weight', { ascending: false });
-  dfSorted = dfSorted.query(dfSorted['source'].ne(dfSorted['target']));
-  df = dfSorted;
-
-  // Min/max weights
-  data.minWeight = dfSorted['weight'].min();
-  data.maxWeight = dfSorted['weight'].max();
-  
-  // Calculate country totals
-  const dfTotals = df.groupby(['source']).col(['weight']).sum()
-  dfTotals.rename({ 'weight_sum': 'weight' }, { inplace: true });
-  dfTotals.sortValues('weight', { ascending: false, inplace: true });
-  data.totals = dfd.toJSON(dfTotals);
-
-  // Group and aggregate by source-&-target
-  // df = df.groupby(['source', 'target']).col(['weight']).sum();
-  // df.rename({ 'weight_sum': 'weight' }, { inplace: true });
 
   // Determine categories
   data.categories = [];
@@ -82,21 +58,73 @@ const loadData = async (file) => {
     }
   }
 
-  // Links
-  const links = dfd.toJSON(dfSorted);
+  // Merge duplicates (and sum weights)
+  // TODO: this only applies if the data is not so well structured,
+  // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
+  const columns = df.columns.filter(item => item !== 'weight');
+  df = df.groupby(columns).col(['weight']).sum();
+  df.rename({ 'weight_sum': 'weight' }, { inplace: true });
 
+  // Sort by weight of connections
+  df = df.sortValues('weight', { ascending: false });
+  df.resetIndex({ inplace: true });
+
+  // Look up and add full location names to data points
+  const locationNames = getLocationNames();
+  const sourceNames = df['source'].apply(v => locationNames[v], { axis: 1 });
+  const targetNames = df['target'].apply(v => locationNames[v], { axis: 1 });
+  df.addColumn('sourceName', sourceNames, { inplace: true });
+  df.addColumn('targetName', targetNames, { inplace: true });
+
+  //TODO: we really don't want to hard-code scaling
+  const scaledWeight = df['weight'].apply(v => v / 1000000000, { axis: 1 });
+  df.addColumn('scaled_weight', scaledWeight, { inplace: true });
+  const weightColumn = 'scaled_weight';
+
+  // Split links to self and links to other countries
+  let dfLinkToSelf = df.query(df['source'].eq(df['target']));
+  dfLinkToSelf.resetIndex({ inplace: true });
+  let dfLinkToOther = df.query(df['source'].ne(df['target']));
+  dfLinkToOther.resetIndex({ inplace: true });
+  console.log(df.shape, dfLinkToSelf.shape, dfLinkToOther.shape);
+
+  // Min/max weights
+  data.minWeight = dfLinkToOther[weightColumn].min();
+  data.maxWeight = dfLinkToOther[weightColumn].max();
+  console.log(data.minWeight, data.maxWeight);
+  console.log(dfLinkToOther.query(dfLinkToOther[weightColumn].lt(1000)));
+
+  // Calculate country totals
+  let dfTotals = df.groupby(['source', 'sourceName']).col([weightColumn]).sum();
+  dfTotals.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
+
+  const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([weightColumn]).sum();
+  dfTotalsSelf.rename({ [`${weightColumn}_sum`]: 'weight_self' }, { inplace: true });
+  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
+  const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([weightColumn]).sum();
+  dfTotalsOther.rename({ [`${weightColumn}_sum`]: 'weight_other' }, { inplace: true });
+  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
+
+  dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
+  data.totals = dfd.toJSON(dfTotals);
+  console.log(data.totals);
+
+  // Group and aggregate by source-&-target
+  // df = df.groupby(['source', 'target']).col([weightColumn]).sum();
+  // df.rename({ 'weight_sum': weightColumn }, { inplace: true });
+
+  // Links
+  const links = dfd.toJSON(dfLinkToOther);
+
+  // Some additional processing
   //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
   links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
   //data.nodes.forEach((d) => !d.weight && (d.weight = 1));
-  links.forEach((d) => !d.weight && (d.weight = 1));
+  //links.forEach((d) => !d.weight && (d.weight = 1));
+  links.forEach(d => d['weight'] = d[weightColumn]);
   links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
 
   data.links = links;
-  //console.log(links);
-  // links.forEach(
-  //   (d) => (!locMap[d.source] || !locMap[d.target]) && console.log(d)
-  // );
-
   return data;
 };
 

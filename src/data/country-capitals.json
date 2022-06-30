@@ -17,7 +17,7 @@
   },
   {
     "CountryName": "French Southern and Antarctic Lands",
-    "CapitalName": "Port-aux-FranÃ§ais",
+    "CapitalName": "Port-aux-Français",
     "CapitalLatitude": "-49.35",
     "CapitalLongitude": "70.216667",
     "CountryCode": "TF",
@@ -65,7 +65,7 @@
   },
   {
     "CountryName": "Western Sahara",
-    "CapitalName": "El-AaiÃºn",
+    "CapitalName": "El-Aaiún",
     "CapitalLatitude": "27.153611",
     "CapitalLongitude": "-13.203333",
     "CountryCode": "EH",
@@ -504,7 +504,7 @@
     "ContinentName": "North America"
   },
   {
-    "CountryName": "CuraÃ§ao",
+    "CountryName": "Curaçao",
     "CapitalName": "Willemstad",
     "CapitalLatitude": "12.1",
     "CapitalLongitude": "-68.916667",
@@ -1914,7 +1914,7 @@
   {
     "CountryName": "Antarctica",
     "CapitalName": "N/A",
-    "CapitalLatitude": "0",
+    "CapitalLatitude": "89.0",
     "CapitalLongitude": "0.000000",
     "CountryCode": "AQ",
     "ContinentName": "Antarctica"
@@ -1930,16 +1930,16 @@
   {
     "CountryName": "Hong Kong",
     "CapitalName": "N/A",
-    "CapitalLatitude": "0",
-    "CapitalLongitude": "0.000000",
+    "CapitalLatitude": "22.3193",
+    "CapitalLongitude": "114.1694",
     "CountryCode": "HK",
     "ContinentName": "Asia"
   },
   {
     "CountryName": "Heard Island and McDonald Islands",
     "CapitalName": "N/A",
-    "CapitalLatitude": "0",
-    "CapitalLongitude": "0.000000",
+    "CapitalLatitude": "-53.0818",
+    "CapitalLongitude": "73.5042",
     "CountryCode": "HM",
     "ContinentName": "Antarctica"
   },
@@ -1954,8 +1954,8 @@
   {
     "CountryName": "Macau",
     "CapitalName": "N/A",
-    "CapitalLatitude": "0",
-    "CapitalLongitude": "0.000000",
+    "CapitalLatitude": "22.1987",
+    "CapitalLongitude": "113.5439",
     "CountryCode": "MO",
     "ContinentName": "Asia"
   }
