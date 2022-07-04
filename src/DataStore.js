@@ -53,7 +53,7 @@ const loadData = async (file) => {
     if (!['source', 'target', 'weight'].includes(column)) {
       data.categories.push({
         name: column,
-        values: df[column].unique().sortValues().values.map(val => val.toString())
+        values: df[column].unique().values.sort().map(val => val.toString())
       });
     }
   }
