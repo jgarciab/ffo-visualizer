@@ -53,7 +53,7 @@ const loadData = async (file) => {
     if (!['source', 'target', 'weight'].includes(column)) {
       data.categories.push({
         name: column,
-        values: df[column].unique().sortValues().values.map(val => val.toString())
+        values: df[column].unique().values.sort().map(val => val.toString())
       });
     }
   }
@@ -83,9 +83,13 @@ const loadData = async (file) => {
 
   // Split links to self and links to other countries
   let dfLinkToSelf = df.query(df['source'].eq(df['target']));
-  dfLinkToSelf.resetIndex({ inplace: true });
+  if (dfLinkToSelf.shape[0] > 0) {
+    dfLinkToSelf.resetIndex({ inplace: true });
+  }
   let dfLinkToOther = df.query(df['source'].ne(df['target']));
-  dfLinkToOther.resetIndex({ inplace: true });
+  if (dfLinkToOther.shape[0] > 0) {
+    dfLinkToOther.resetIndex({ inplace: true });
+  }
   console.log(df.shape, dfLinkToSelf.shape, dfLinkToOther.shape);
 
   // Min/max weights
@@ -98,12 +102,16 @@ const loadData = async (file) => {
   let dfTotals = df.groupby(['source', 'sourceName']).col([weightColumn]).sum();
   dfTotals.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
 
-  const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([weightColumn]).sum();
-  dfTotalsSelf.rename({ [`${weightColumn}_sum`]: 'weight_self' }, { inplace: true });
-  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
-  const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([weightColumn]).sum();
-  dfTotalsOther.rename({ [`${weightColumn}_sum`]: 'weight_other' }, { inplace: true });
-  dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
+  if (dfLinkToSelf.shape[0] > 0) {
+    const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([weightColumn]).sum();
+    dfTotalsSelf.rename({ [`${weightColumn}_sum`]: 'weight_self' }, { inplace: true });
+    dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
+  }
+  if (dfLinkToOther.shape[0] > 0) {
+    const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([weightColumn]).sum();
+    dfTotalsOther.rename({ [`${weightColumn}_sum`]: 'weight_other' }, { inplace: true });
+    dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
+  }
 
   dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
   data.totals = dfd.toJSON(dfTotals);
