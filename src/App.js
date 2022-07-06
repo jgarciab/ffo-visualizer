@@ -109,7 +109,7 @@ function App() {
           {/* Side bar */}
           <div className="border border-base-300 bg-base-100 rounded-box p-4 content text-left">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
-            or load a demo: <a href="#"><button onClick={() => loadDemoData()}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)
+            or load a demo: <a href="#!"><button onClick={() => loadDemoData()}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)
           </div>
           <div className="border border-base-300 bg-base-100 rounded-box p-4">
             <span>Top {topN}/{totalLinks} connections</span>
