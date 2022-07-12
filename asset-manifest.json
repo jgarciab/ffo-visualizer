@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/ffo-visualizer/static/css/main.3b68874d.css",
-    "main.js": "/ffo-visualizer/static/js/main.eec9a553.js",
+    "main.js": "/ffo-visualizer/static/js/main.d5332c0a.js",
     "index.html": "/ffo-visualizer/index.html",
     "main.3b68874d.css.map": "/ffo-visualizer/static/css/main.3b68874d.css.map",
-    "main.eec9a553.js.map": "/ffo-visualizer/static/js/main.eec9a553.js.map"
+    "main.d5332c0a.js.map": "/ffo-visualizer/static/js/main.d5332c0a.js.map"
   },
   "entrypoints": [
     "static/css/main.3b68874d.css",
-    "static/js/main.eec9a553.js"
+    "static/js/main.d5332c0a.js"
   ]
 }
