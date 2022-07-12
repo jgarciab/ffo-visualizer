@@ -63,12 +63,20 @@ function App() {
   // updateFilteredData
   useEffect(() => {
     const result = { ...data };
-    result.links = data.links.slice(0, topN); // Only select topN links
     result.links = result.links.filter(link => selectedSources.includes(link.source));
     result.links = result.links.filter(link => selectedTargets.includes(link.target));
     Object.keys(selectedCategories).forEach(key => {
       result.links = result.links.filter(link => selectedCategories[key].includes(link[key].toString()))
     });
+    result.linkCountAfterCategories = result.links.length;
+    // Make sure the top-N value is within range or take a sensible default if needed (20)
+    if (topN === 0 && result.linkCountAfterCategories > 0) {
+      setTopN(Math.min(20, result.linkCountAfterCategories));
+    }
+    if (topN > result.linkCountAfterCategories) {
+      setTopN(result.linkCountAfterCategories);
+    }
+    result.links = result.links.slice(0, topN); // Only select topN links
     setFilteredData(result);
   }, [topN, selectedSources, selectedTargets, selectedCategories, data]);
 
@@ -109,18 +117,18 @@ function App() {
           {/* Side bar */}
           <div className="border border-base-300 bg-base-100 rounded-box p-4 content text-left">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
-            or load a demo: <a href="#!"><button onClick={() => loadDemoData()}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)
-          </div>
-          <div className="border border-base-300 bg-base-100 rounded-box p-4">
-            <span>Top {topN}/{totalLinks} connections</span>
-            <input type="range" className="range" min="1" max={totalLinks} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
+            or load a demo: <a href="#!"><button onClick={() => loadDemoData()}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
+            Link count: {totalLinks}
           </div>
           <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
           <MultiSelect label="Targets" options={usedLocations} selection={selectedTargets} onChanged={selection => setSelectedTargets(selection)} />
           { data.categories.map(category => (
             <MultiSelect key={category.name} label={category.name} options={category.values} selection={selectedCategories[category.name] || []} onChanged={selection => changeCategorySelection(category, selection)} />
           ))}
-          <span>Showing {filteredData.links.length} links</span>
+          <div className="border border-base-300 bg-base-100 rounded-box p-4">
+            <span>Top {topN}/{filteredData.linkCountAfterCategories} connections</span>
+            <input type="range" className="range" min="1" max={filteredData.linkCountAfterCategories} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
+          </div>
         </div>
         
         {/* Main content */}
