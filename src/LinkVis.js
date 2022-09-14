@@ -92,7 +92,7 @@ const linkArc = (d, s, t) => {
 
 
 const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
-  const logScale = d3.scaleLog().domain([Math.max(1, data.minWeight), data.maxWeight]).range([0.2, 6.0]);
+  const logScale = d3.scaleLog().domain([Math.max(1, data.minWeight), data.maxWeight]).range([0.2, 4.0]);
   const links = data.links;
   const routes = avoidLinkOverlaps(links);
 
@@ -140,25 +140,25 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("d", "M0,-5L10,0L0,5")
     .attr("fill", "#000");
 
-  link
-    .selectAll(".link-path-shadow")
-    .data((d) => [d])
-    .join("path")
-    .attr("class", "link-path-shadow")
-    .attr("fill", "none")
-    .attr("stroke-width", (d) => logScale(d.weight) + 1)
-    .attr("stroke", "#000")
-    .attr("opacity", 0.7)
-    .attr("marker-end", (d) =>
-      d.directed === "yes" ? `url(#marker-shadow-${d.id})` : undefined
-    )
-    .attr("d", (d, i) =>
-      linkArc(
-        routes[i],
-        projection(locMap[d.source]),
-        projection(locMap[d.target])
-      )
-    );
+  // link outline
+  //   .selectAll(".link-path-shadow")
+  //   .data((d) => [d])
+  //   .join("path")
+  //   .attr("class", "link-path-shadow")
+  //   .attr("fill", "none")
+  //   .attr("stroke-width", (d) => logScale(d.weight) + 1)
+  //   .attr("stroke", "#000")
+  //   .attr("opacity", 0.7)
+  //   .attr("marker-end", (d) =>
+  //     d.directed === "yes" ? `url(#marker-shadow-${d.id})` : undefined
+  //   )
+  //   .attr("d", (d, i) =>
+  //     linkArc(
+  //       routes[i],
+  //       projection(locMap[d.source]),
+  //       projection(locMap[d.target])
+  //     )
+  //   );
 
   link
     .selectAll(".link-path")
@@ -168,7 +168,7 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("fill", "none")
     .attr("stroke-width", (d) => logScale(d.weight))
     .attr("stroke", linkColor(links))
-    .attr("opacity", 1.0)
+    .attr("opacity", 0.5)
     .attr("marker-end", (d) =>
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
     )
