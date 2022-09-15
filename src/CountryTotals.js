@@ -5,7 +5,7 @@ import BarChart from './BarChart';
 
 function CountryTotals() {
   const { data } = useContext(AppContext);
-  const totals = data.totals;
+  const totals = data.totals.slice(0, 20); // fix at top 20 values
   const width = totals.length * 28 + 100;
 
   const ref = useD3(

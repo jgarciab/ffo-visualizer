@@ -95,6 +95,7 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
   const logScale = d3.scaleLog().domain([Math.max(1, data.minWeight), data.maxWeight]).range([0.2, 4.0]);
   const links = data.links;
   const routes = avoidLinkOverlaps(links);
+  const strokeColor = linkColor(links);
 
   const link = svg
     .append("g")
@@ -114,7 +115,7 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("class", "marker")
     .attr("orient", "auto")
     .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 4)
+    .attr("refX", 12)
     .attr("refY", 0)
     .attr("markerWidth", 8)
     .attr("markerHeight", 8)
@@ -122,23 +123,23 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("opacity", 1.0)
     .append("path")
     .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", linkColor(links));
+    .attr("fill", strokeColor);
 
-  defs
-    .append("marker")
-    .attr("id", (d) => `marker-shadow-${d.id}`)
-    .attr("class", "marker")
-    .attr("orient", "auto")
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 4)
-    .attr("refY", 0)
-    .attr("markerWidth", 10)
-    .attr("markerHeight", 10)
-    .attr("markerUnits", "userSpaceOnUse")
-    .attr("opacity", 1.0)
-    .append("path")
-    .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", "#000");
+  // defs
+  //   .append("marker")
+  //   .attr("id", (d) => `marker-shadow-${d.id}`)
+  //   .attr("class", "marker")
+  //   .attr("orient", "auto")
+  //   .attr("viewBox", "0 -5 10 10")
+  //   .attr("refX", 4)
+  //   .attr("refY", 0)
+  //   .attr("markerWidth", 10)
+  //   .attr("markerHeight", 10)
+  //   .attr("markerUnits", "userSpaceOnUse")
+  //   .attr("opacity", 1.0)
+  //   .append("path")
+  //   .attr("d", "M0,-5L10,0L0,5")
+  //   .attr("fill", "#000");
 
   // link outline
   //   .selectAll(".link-path-shadow")
@@ -167,7 +168,7 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("class", "link-path")
     .attr("fill", "none")
     .attr("stroke-width", (d) => logScale(d.weight))
-    .attr("stroke", linkColor(links))
+    .attr("stroke", strokeColor)
     .attr("opacity", 0.5)
     .attr("marker-end", (d) =>
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
@@ -180,34 +181,44 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
       )
     );
 
-    link.on("mouseover", toolTipHandler);
-    link.on("mouseout", toolTipHandler);
+    link.on("mouseover", (event, data) => {
+      toolTipHandler(event, data);
+      d3.select(event.target)
+        .style("opacity", "1.0")
+        .style("stroke", "red");
+    });
+    link.on("mouseout", (event, data) => {
+      toolTipHandler(event, data);
+      d3.select(event.target)
+        .style("opacity", "0.5")
+        .style("stroke", strokeColor);
+    });
 
   // link.append("title")
   //   .datum(d => d)
   //   .text(d => JSON.stringify(d));
 
+  const nodes = data.nodes;
+  const node = svg
+    .append("g")
+    .selectAll(".node")
+    .data(nodes)
+    .join("g")
+    .attr("class", "node")
+    .attr("transform", (d) => {
+      return `translate(${projection(locMap[d])[0]},${
+        projection(locMap[d])[1]
+      })`;
+    });
 
-  // const node = svg
-  //   .append("g")
-  //   .selectAll(".node")
-  //   .data(nodes)
-  //   .join("g")
-  //   .attr("class", "node")
-  //   .attr("transform", (d) => {
-  //     return `translate(${projection(locMap[d.id])[0]},${
-  //       projection(locMap[d.id])[1]
-  //     })`;
-  //   });
-
-  // node
-  //   .selectAll("circle")
-  //   .data((d) => [d])
-  //   .join("circle")
-  //   .attr("stroke", nodeColor(nodes))
-  //   .attr("r", 4)
-  //   .attr("stroke-width", 2)
-  //   .attr("fill", "white");
+  node
+    .selectAll("circle")
+    .data((d) => [d])
+    .join("circle")
+    .attr("stroke", "black")
+    .attr("r", 3)
+    .attr("stroke-width", 1)
+    .attr("fill", "white");
 
   // node
   //   .selectAll("text")

@@ -26,8 +26,18 @@ const getLocationNames = () => {
   }, {});
 }
 
-const createEmptyData = () => { return { links: [], totals: [], categories: [] }};
+const createEmptyData = () => { return { 
+  links: [],
+  nodes: [],
+  totals: [],
+  categories: [] 
+}};
 
+/**
+ * Loads a CSV and returns an object containing the links, nodes, totals and categories.
+ * Some basic processing and aggregation is performed using the danfojs library.
+ * Filtering happens in the root component (App)
+ */
 const loadData = async (file) => {
   const data = {};
 
@@ -125,13 +135,9 @@ const loadData = async (file) => {
   const links = dfd.toJSON(dfLinkToOther);
 
   // Some additional processing
-  //data.nodes.forEach((d, i) => !d.id && (d.id = `node-${i}`));
-  links.forEach((d, i) => !d.id && (d.id = `link-${i}`));
-  //data.nodes.forEach((d) => !d.weight && (d.weight = 1));
-  //links.forEach((d) => !d.weight && (d.weight = 1));
+  links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
   links.forEach(d => d['weight'] = d[weightColumn]);
   links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
-
   data.links = links;
   return data;
 };

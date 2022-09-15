@@ -25,15 +25,22 @@ function GeoFlowVis({ countryMap }) {
 
       // Clean up
       svg.selectAll(".link").remove();
+      svg.selectAll(".node").remove();
 
       // Render base map
       svg
         .select(".map")
-        .datum(countryMap)
+        .selectAll(".country")
+        .data(countryMap.features)
+        .enter()
+        .append("path")
+        .attr("class", "country")
+        .attr("d", path)
         .attr("fill", "#b5b1a7")
         .attr("stroke", "white")
         .attr("stroke-width", 0.4)
-        .attr("d", path);
+        .on("mouseover", function() { d3.select(this).style("fill", "#488c48") })
+        .on("mouseout", function() { d3.select(this).style("fill", "#b5b1a7") });
 
       // Render links
       if (filteredData.links.length > 0) {
@@ -51,7 +58,7 @@ function GeoFlowVis({ countryMap }) {
           height: "100%",
         }}
         viewBox={[160, 0, 800, 420]}>
-        <path className="map" />
+        <g className="map" />
       </svg>
       <div className="tooltip" style={{
           top: tooltipData ? `${tooltipData.top}px` : 0,

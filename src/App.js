@@ -43,9 +43,9 @@ function App() {
     }
   };
 
-  const loadDemoData = async () => {
+  const loadDemoData = async (fileName) => {
     try {
-      setData(await loadData(`${window.PUBLIC_URL}/data/demo_ffo.csv`));
+      setData(await loadData(`${window.PUBLIC_URL}/data/${fileName}`));
     }
     catch(e) {
       setError(e);
@@ -63,20 +63,32 @@ function App() {
   // updateFilteredData
   useEffect(() => {
     const result = { ...data };
-    result.links = result.links.filter(link => selectedSources.includes(link.source));
-    result.links = result.links.filter(link => selectedTargets.includes(link.target));
+
+    // Filter links for source OR target in selection
+    result.links = result.links.filter(link => selectedSources.includes(link.source) || selectedTargets.includes(link.target));
+
+    // Filter for categories
     Object.keys(selectedCategories).forEach(key => {
       result.links = result.links.filter(link => selectedCategories[key].includes(link[key].toString()))
     });
     result.linkCountAfterCategories = result.links.length;
-    // Make sure the top-N value is within range or take a sensible default if needed (20)
+
+    // First make sure the top-N value is within range or take a sensible default if needed (20)
     if (topN === 0 && result.linkCountAfterCategories > 0) {
       setTopN(Math.min(20, result.linkCountAfterCategories));
     }
     if (topN > result.linkCountAfterCategories) {
       setTopN(result.linkCountAfterCategories);
     }
-    result.links = result.links.slice(0, topN); // Only select topN links
+
+    // Select top-N connections
+    result.links = result.links.slice(0, topN);
+
+    // List of nodes used as link source or target
+    const nodes = new Set();
+    result.links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
+    result.nodes = [...nodes];
+
     setFilteredData(result);
   }, [topN, selectedSources, selectedTargets, selectedCategories, data]);
 
@@ -117,7 +129,8 @@ function App() {
           {/* Side bar */}
           <div className="border border-base-300 bg-base-100 rounded-box p-4 content text-left">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
-            or load a demo: <a href="#!"><button onClick={() => loadDemoData()}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
+            or load a demo: <a href="#!"><button onClick={() => loadDemoData("demo_ffo.csv")}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
+            demo 2: <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
             Link count: {totalLinks}
           </div>
           <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
@@ -127,7 +140,7 @@ function App() {
           ))}
           <div className="border border-base-300 bg-base-100 rounded-box p-4">
             <span>Top {topN}/{filteredData.linkCountAfterCategories} connections</span>
-            <input type="range" className="range" min="1" max={filteredData.linkCountAfterCategories} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
+            <input type="range" className="range" min="1" max={Math.min(1000, filteredData.linkCountAfterCategories)} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
           </div>
         </div>
         
