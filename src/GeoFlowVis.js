@@ -38,9 +38,9 @@ function GeoFlowVis({ countryMap }) {
         .attr("d", path)
         .attr("fill", "#b5b1a7")
         .attr("stroke", "white")
-        .attr("stroke-width", 0.4)
-        .on("mouseover", function() { d3.select(this).style("fill", "#488c48") })
-        .on("mouseout", function() { d3.select(this).style("fill", "#b5b1a7") });
+        .attr("stroke-width", 0.4);
+        // .on("mouseover", function() { d3.select(this).style("fill", "#488c48") })
+        // .on("mouseout", function() { d3.select(this).style("fill", "#b5b1a7") });
 
       // Render links
       if (filteredData.links.length > 0) {

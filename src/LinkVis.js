@@ -102,7 +102,10 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .selectAll(".link")
     .data(links)
     .join("g")
-    .attr("class", "link");
+    .attr("class", "link")
+    .attr("opacity", 0.5)
+    .attr("stroke", strokeColor)
+    .attr("fill", strokeColor); // for the marker-end
 
   const defs = link
     .selectAll("defs")
@@ -120,10 +123,8 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("markerWidth", 8)
     .attr("markerHeight", 8)
     .attr("markerUnits", "userSpaceOnUse")
-    .attr("opacity", 1.0)
     .append("path")
     .attr("d", "M0,-5L10,0L0,5")
-    .attr("fill", strokeColor);
 
   // defs
   //   .append("marker")
@@ -165,11 +166,10 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .selectAll(".link-path")
     .data((d) => [d])
     .join("path")
+    .attr("id", d => d.id)
     .attr("class", "link-path")
     .attr("fill", "none")
     .attr("stroke-width", (d) => logScale(d.weight))
-    .attr("stroke", strokeColor)
-    .attr("opacity", 0.5)
     .attr("marker-end", (d) =>
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
     )
@@ -181,18 +181,20 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
       )
     );
 
-    link.on("mouseover", (event, data) => {
-      toolTipHandler(event, data);
-      d3.select(event.target)
-        .style("opacity", "1.0")
-        .style("stroke", "red");
-    });
-    link.on("mouseout", (event, data) => {
-      toolTipHandler(event, data);
-      d3.select(event.target)
-        .style("opacity", "0.5")
-        .style("stroke", strokeColor);
-    });
+  link.on("mouseover", (event, data) => {
+    toolTipHandler(event, data);
+    d3.select(event.target.parentNode) // select the group
+      .attr("opacity", "1.0")
+      .attr("stroke", "red")
+      .attr("fill", "red"); // for marker-end
+  });
+  link.on("mouseout", (event, data) => {
+    toolTipHandler(event, data);
+    d3.select(event.target.parentNode)
+      .attr("opacity", "0.5")
+      .attr("stroke", strokeColor)
+      .attr("fill", strokeColor);
+  });
 
   // link.append("title")
   //   .datum(d => d)
@@ -218,7 +220,25 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("stroke", "black")
     .attr("r", 3)
     .attr("stroke-width", 1)
-    .attr("fill", "white");
+    .attr("fill", "white")
+    .on("mouseover", (event, data) => {
+      // Highlight all links connected to this node
+      const selection = d3.selectAll(".link"); // select the group element (not only the path)
+      selection.filter(d => d.source === data)
+        .attr("stroke", "red")
+        .attr("fill", "red")
+        .attr("opacity", 1.0);
+      selection.filter(d => d.source !== data)
+        .attr("stroke", "grey")
+        .attr("fill", "grey")
+        .attr("opacity", 0.1);
+    })
+    .on("mouseout", (event, data) => {
+      d3.selectAll(".link")
+        .attr("stroke", strokeColor)
+        .attr("fill", strokeColor)
+        .attr("opacity", 0.5);
+    });
 
   // node
   //   .selectAll("text")
