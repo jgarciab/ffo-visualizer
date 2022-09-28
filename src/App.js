@@ -131,7 +131,7 @@ function App() {
           <div className="border border-base-300 bg-base-100 rounded-box p-4 content text-left">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
             or load a demo: <a href="#!"><button onClick={() => loadDemoData("demo_ffo.csv")}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
-            demo 2: <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
+            demo 2 (time series): <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
             Link count: {totalLinks}
           </div>
           <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
