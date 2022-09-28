@@ -1,0 +1,335 @@
+target,nace2_2,nace2_1,nace2_1_name,year,source,weight
+AE,23,C,Manufacturing,2013,KW,9142002.0
+AE,23,C,Manufacturing,2017,KW,15534196.6
+AE,23,C,Manufacturing,2018,KW,17254216.2
+AU,24,C,Manufacturing,2017,CN,24287976.0
+BH,20,C,Manufacturing,2013,KW,132000000.0
+BH,20,C,Manufacturing,2015,KW,88110000.0
+BM,06,B,Mining and quarrying,2012,CN,2133251250.0
+BM,06,B,Mining and quarrying,2013,CN,2260707750.0
+BM,06,B,Mining and quarrying,2016,CN,143734707.2
+BM,06,B,Mining and quarrying,2017,CN,138646584.0
+BM,06,B,Mining and quarrying,2018,CN,132369354.0
+BM,06,B,Mining and quarrying,2019,CN,117580779.0
+BM,06,B,Mining and quarrying,2020,CN,9289018572.6
+BM,06,B,Mining and quarrying,2020,RU,2128865688.0
+BM,35,D,"Electricity, gas, steam and air conditioning supply",2014,IN,124756530.0
+BM,35,D,"Electricity, gas, steam and air conditioning supply",2018,IN,230843092.2
+BM,35,D,"Electricity, gas, steam and air conditioning supply",2020,IN,261146494.7
+CN,29,C,Manufacturing,2018,SG,47816013.0
+CN,29,C,Manufacturing,2019,SG,48842077.9
+CN,51,H,Transportation and storage,2019,QA,1140017150.0
+DE,07,B,Mining and quarrying,2016,NO,263839016.0
+DE,07,B,Mining and quarrying,2017,NO,324611416.0
+DE,07,B,Mining and quarrying,2018,NO,427657240.8
+DE,20,C,Manufacturing,2017,NO,5940598.3
+DE,20,C,Manufacturing,2018,NO,1081698974.8000002
+DE,20,C,Manufacturing,2019,NO,643084407.2
+DE,24,C,Manufacturing,2018,NO,14067840.0
+DE,24,C,Manufacturing,2019,SG,1383186090.0
+DE,24,C,Manufacturing,2020,SG,1255964100.0
+DE,29,C,Manufacturing,2012,QA,44629693020.0
+DE,29,C,Manufacturing,2016,NO,3064530949.0
+DE,29,C,Manufacturing,2017,NO,208295545.0
+DE,29,C,Manufacturing,2018,NO,215024135.9
+DE,29,C,Manufacturing,2019,CN,9858226900.0
+DE,29,C,Manufacturing,2019,KW,13801517660.0
+DE,29,C,Manufacturing,2019,NO,212251565.6
+DE,29,C,Manufacturing,2019,QA,32754048168.6
+DE,29,C,Manufacturing,2020,CN,9586836000.0
+DE,29,C,Manufacturing,2020,KW,13038096960.0
+DE,29,C,Manufacturing,2020,NO,193710521.5
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2012,CH,730536.2999999999
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2012,NL,16797.2
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2013,CH,814912.8
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2013,NL,18648.0
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2014,CH,674605.7999999999
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2014,NL,13863.2
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2015,CH,589078.5
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2016,CH,512702.1
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2016,NL,8686.0
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2017,CH,1884538.8
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2017,FI,40959596146.5
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2017,NL,345056.4
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2018,CH,1881642.0
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2018,FI,45146815243.5
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2018,NL,344526.0
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2019,CH,1946876.8
+DE,35,D,"Electricity, gas, steam and air conditioning supply",2019,NL,356470.4
+DE,51,H,Transportation and storage,2018,NO,1176235961.1
+DE,51,H,Transportation and storage,2019,NO,1208166783.1
+ES,06,B,Mining and quarrying,2012,MX,7380083729.999999
+ES,06,B,Mining and quarrying,2013,MX,7220573010.0
+ES,06,B,Mining and quarrying,2014,MX,68803081.2
+ES,06,B,Mining and quarrying,2015,MX,4230179960.4
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2012,DZ,1294339254.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2013,DZ,1389139800.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2014,DZ,1213954920.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2015,DZ,1144093000.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2016,DZ,991174998.1
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2017,DZ,1134295868.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2018,DZ,1122329560.0
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2019,DZ,1045076295.3
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2020,DZ,862347091.5
+ES,35,D,"Electricity, gas, steam and air conditioning supply",2021,DZ,1085827312.9999998
+ES,51,H,Transportation and storage,2015,QA,2486061749.7
+ES,51,H,Transportation and storage,2016,QA,4759951786.500001
+ES,51,H,Transportation and storage,2017,QA,5711179263.0
+ES,51,H,Transportation and storage,2018,QA,5985794152.8
+ES,51,H,Transportation and storage,2019,QA,12298055160.4
+ES,51,H,Transportation and storage,2020,QA,2408094481.8
+FR,51,H,Transportation and storage,2019,NL,3366773190.0
+FR,51,H,Transportation and storage,2020,NL,1904850780.0
+FR,51,H,Transportation and storage,2021,NL,2383217620.0
+GB,06,B,Mining and quarrying,2012,QA,42151993400.0
+GB,06,B,Mining and quarrying,2017,CN,56723000.0
+GB,06,B,Mining and quarrying,2018,CN,27887000.0
+GB,06,B,Mining and quarrying,2019,CN,3572000.0
+GB,06,B,Mining and quarrying,2020,CN,9489000.0
+HK,51,H,Transportation and storage,2012,CN,9610001308.5
+HK,51,H,Transportation and storage,2013,CN,3886651217.6
+HK,51,H,Transportation and storage,2014,CN,4098601044.1
+HK,51,H,Transportation and storage,2015,CN,3301142000.0
+HK,51,H,Transportation and storage,2016,CN,3587312930.3
+HK,51,H,Transportation and storage,2017,CN,3734988600.0
+HK,51,H,Transportation and storage,2017,QA,1237526222.8
+HK,51,H,Transportation and storage,2018,CN,4251582133.4
+HK,51,H,Transportation and storage,2018,QA,1414831266.8
+HK,51,H,Transportation and storage,2019,CN,10301663511.699999
+HK,51,H,Transportation and storage,2019,QA,1370990823.4
+HK,51,H,Transportation and storage,2020,CN,4539637384.299999
+HK,51,H,Transportation and storage,2020,QA,604154968.6
+IE,23,C,Manufacturing,2015,US,5146284.6
+IN,06,B,Mining and quarrying,2019,SG,50822704.8
+IN,19,C,Manufacturing,2016,SG,5685636.0
+IN,19,C,Manufacturing,2017,SG,6925023.0
+IN,20,C,Manufacturing,2012,SG,37884784.00000001
+IN,20,C,Manufacturing,2015,SG,23209140.8
+IN,20,C,Manufacturing,2017,SG,567247083.0
+IN,20,C,Manufacturing,2018,SG,768369636.3
+IN,20,C,Manufacturing,2019,SG,1086140667.6000001
+IN,23,C,Manufacturing,2019,SG,120782429.6
+IN,23,C,Manufacturing,2020,SG,61006389.4
+IN,23,C,Manufacturing,2021,SG,61553684.4
+IN,29,C,Manufacturing,2012,SG,154701987.2
+IN,29,C,Manufacturing,2013,SG,174210374.7
+IN,29,C,Manufacturing,2014,SG,193479569.6
+IN,29,C,Manufacturing,2015,SG,202808123.1
+IN,29,C,Manufacturing,2016,SG,972148406.5
+IN,29,C,Manufacturing,2017,SG,14009606.3
+IN,29,C,Manufacturing,2018,SG,15806799.700000003
+IN,29,C,Manufacturing,2019,SG,2418799047.6
+IN,29,C,Manufacturing,2020,SG,1023617460.0
+JO,08,B,Mining and quarrying,2012,IQ,38932168.0
+JO,08,B,Mining and quarrying,2013,IQ,34561027.0
+JO,08,B,Mining and quarrying,2013,KW,114012273.69999999
+JO,08,B,Mining and quarrying,2014,IQ,35667219.0
+JO,08,B,Mining and quarrying,2014,KW,97435429.2
+JO,08,B,Mining and quarrying,2015,IQ,34978998.0
+JO,08,B,Mining and quarrying,2015,KW,99922620.6
+JO,08,B,Mining and quarrying,2016,IQ,25546803.0
+JO,08,B,Mining and quarrying,2016,KW,72988963.2
+JO,08,B,Mining and quarrying,2017,IQ,28780262.0
+JO,08,B,Mining and quarrying,2017,KW,78713291.4
+JO,08,B,Mining and quarrying,2018,BN,365258820.0
+JO,08,B,Mining and quarrying,2018,IQ,31955159.0
+JO,08,B,Mining and quarrying,2018,KW,92104453.8
+JO,08,B,Mining and quarrying,2019,IQ,33403652.0
+JO,08,B,Mining and quarrying,2019,KW,89236878.3
+JO,08,B,Mining and quarrying,2020,IQ,30197124.0
+JO,08,B,Mining and quarrying,2020,KW,81086656.8
+JO,19,C,Manufacturing,2013,KW,1279925158.0
+JP,06,B,Mining and quarrying,2017,NO,237403953.0
+JP,06,B,Mining and quarrying,2018,NO,126108792.0
+JP,08,B,Mining and quarrying,2017,NO,21239948.0
+JP,08,B,Mining and quarrying,2018,NO,26026907.4
+JP,08,B,Mining and quarrying,2019,NO,24105742.5
+JP,09,B,Mining and quarrying,2014,KW,412098114.4
+JP,09,B,Mining and quarrying,2014,SA,412098114.4
+JP,09,B,Mining and quarrying,2016,KW,278189007.6
+JP,09,B,Mining and quarrying,2016,NO,138158470.8
+JP,09,B,Mining and quarrying,2016,SA,278189007.6
+JP,09,B,Mining and quarrying,2017,KW,296508712.8
+JP,09,B,Mining and quarrying,2017,NO,168407371.2
+JP,09,B,Mining and quarrying,2017,SA,296508712.8
+JP,09,B,Mining and quarrying,2018,KW,362818713.7
+JP,09,B,Mining and quarrying,2018,SA,362818713.7
+JP,09,B,Mining and quarrying,2019,KW,319869140.8
+JP,09,B,Mining and quarrying,2019,SA,319869140.8
+JP,09,B,Mining and quarrying,2020,KW,234099555.2
+JP,09,B,Mining and quarrying,2020,SA,234099555.2
+JP,20,C,Manufacturing,2015,NO,8604377.6
+JP,20,C,Manufacturing,2017,NO,78836096.1
+JP,20,C,Manufacturing,2018,NO,204116199.79999998
+JP,20,C,Manufacturing,2019,NO,44130018.8
+JP,20,C,Manufacturing,2020,NO,322502102.2
+JP,23,C,Manufacturing,2015,NO,60923607.2
+JP,23,C,Manufacturing,2017,NO,63225946.400000006
+JP,23,C,Manufacturing,2018,NO,168711849.7
+JP,23,C,Manufacturing,2019,NO,151109943.3
+JP,23,C,Manufacturing,2020,NO,144782584.6
+JP,24,C,Manufacturing,2015,NO,390547145.4
+JP,24,C,Manufacturing,2016,NO,401889600.0
+JP,24,C,Manufacturing,2017,NO,726398679.6
+JP,24,C,Manufacturing,2019,NO,6689400.0
+JP,24,C,Manufacturing,2020,NO,15616061.4
+JP,29,C,Manufacturing,2015,NO,77693508.30000001
+JP,29,C,Manufacturing,2016,NO,45476811.0
+JP,29,C,Manufacturing,2017,NO,233941809.0
+JP,29,C,Manufacturing,2018,NO,474274772.3
+JP,29,C,Manufacturing,2019,NO,340801601.79999995
+JP,29,C,Manufacturing,2020,NO,70614750.5
+JP,35,D,"Electricity, gas, steam and air conditioning supply",2016,NO,169968948.0
+JP,35,D,"Electricity, gas, steam and air conditioning supply",2017,NO,36640509.9
+JP,35,D,"Electricity, gas, steam and air conditioning supply",2018,NO,37598946.0
+JP,35,D,"Electricity, gas, steam and air conditioning supply",2019,NO,28666816.1
+JP,35,D,"Electricity, gas, steam and air conditioning supply",2020,NO,25872536.3
+KR,49,H,Transportation and storage,2012,SA,18471643.200000003
+KR,49,H,Transportation and storage,2013,SA,21290066.400000002
+KR,49,H,Transportation and storage,2014,SA,18980112.000000004
+KR,49,H,Transportation and storage,2015,SA,17339798.400000002
+KR,49,H,Transportation and storage,2016,SA,11975923.2
+KR,49,H,Transportation and storage,2017,SA,13106436.0
+KR,49,H,Transportation and storage,2018,SA,12870228.0
+KR,49,H,Transportation and storage,2019,SA,26556385.8
+KR,49,H,Transportation and storage,2020,SA,27959761.2
+KY,35,D,"Electricity, gas, steam and air conditioning supply",2016,CN,19468208.7
+KZ,49,H,Transportation and storage,2015,RU,51369600.0
+KZ,49,H,Transportation and storage,2016,RU,84409680.0
+KZ,49,H,Transportation and storage,2017,RU,105940800.0
+KZ,49,H,Transportation and storage,2018,RU,95872560.0
+KZ,49,H,Transportation and storage,2019,RU,109842480.0
+KZ,49,H,Transportation and storage,2020,RU,99983520.0
+LK,19,C,Manufacturing,2012,IN,445001114.4
+LK,19,C,Manufacturing,2013,IN,470327071.2
+LK,19,C,Manufacturing,2014,IN,451842292.8
+LK,19,C,Manufacturing,2015,IN,372432189.6
+LK,19,C,Manufacturing,2016,IN,401296850.0
+LK,19,C,Manufacturing,2017,IN,440188887.0
+LK,19,C,Manufacturing,2018,IN,368644639.2
+LK,19,C,Manufacturing,2019,IN,326601638.99999994
+LK,19,C,Manufacturing,2020,IN,252149751.99999997
+LU,24,C,Manufacturing,2012,BE,15366005.6
+LU,24,C,Manufacturing,2013,BE,16843131.8
+LU,24,C,Manufacturing,2014,BE,14928464.1
+LU,24,C,Manufacturing,2015,BE,10927848.8
+LU,24,C,Manufacturing,2016,BE,6359168.2
+LU,24,C,Manufacturing,2017,BE,666262.2999999999
+LU,24,C,Manufacturing,2018,BE,824246.5
+LU,24,C,Manufacturing,2019,BE,418597.3
+LU,24,C,Manufacturing,2020,BE,1936653.4
+MU,51,H,Transportation and storage,2018,IN,50016897.0
+MX,07,B,Mining and quarrying,2017,US,73884431.8
+MX,07,B,Mining and quarrying,2018,US,74361000.0
+MX,07,B,Mining and quarrying,2019,US,72150400.0
+MX,07,B,Mining and quarrying,2020,US,73368236.8
+NA,09,B,Mining and quarrying,2020,CN,7277000.0
+NL,30,C,Manufacturing,2012,DE,2055677910.0
+NL,30,C,Manufacturing,2012,ES,4036603896.0
+NL,30,C,Manufacturing,2012,FR,44851154.4
+NL,30,C,Manufacturing,2013,DE,8548376489.6
+NL,30,C,Manufacturing,2013,ES,3293357733.4
+NL,30,C,Manufacturing,2013,FR,23372473405.8
+NL,30,C,Manufacturing,2014,ES,3035967836.0
+NL,30,C,Manufacturing,2014,FR,8145279560.0
+NL,30,C,Manufacturing,2015,ES,2912129506.0
+NL,30,C,Manufacturing,2016,ES,3052130538.6
+NL,30,C,Manufacturing,2017,ES,3007993709.6
+NL,30,C,Manufacturing,2018,ES,3113371996.8
+NL,30,C,Manufacturing,2019,ES,4353607625.1
+NL,30,C,Manufacturing,2020,ES,2517767236.9999995
+NL,30,C,Manufacturing,2021,ES,2449206257.9999995
+NO,06,B,Mining and quarrying,2019,KW,115842600.0
+NO,06,B,Mining and quarrying,2020,KW,82472400.0
+NO,09,B,Mining and quarrying,2019,SG,93500.0
+NO,09,B,Mining and quarrying,2020,SG,51200.0
+NO,09,B,Mining and quarrying,2021,SG,70380.0
+NO,20,C,Manufacturing,2021,SG,65816.3
+NO,51,H,Transportation and storage,2013,FI,124051203.50000001
+NO,51,H,Transportation and storage,2014,FI,123341559.60000002
+PK,09,B,Mining and quarrying,2018,SG,2378724.6
+PK,09,B,Mining and quarrying,2019,SG,1765923.5
+PK,09,B,Mining and quarrying,2020,SG,2334654.4
+PK,09,B,Mining and quarrying,2021,SG,2140924.8000000003
+PL,49,H,Transportation and storage,2018,NO,10774950.9
+PL,49,H,Transportation and storage,2020,NO,10707516.1
+RS,20,C,Manufacturing,2012,BA,21928615.8
+RS,20,C,Manufacturing,2013,BA,68600062.8
+RS,20,C,Manufacturing,2014,BA,40525879.2
+RS,30,C,Manufacturing,2012,BA,155437.1
+RS,30,C,Manufacturing,2013,BA,78315.3
+RS,30,C,Manufacturing,2014,BA,54271.7
+RS,35,D,"Electricity, gas, steam and air conditioning supply",2012,BA,1312000.0
+RS,35,D,"Electricity, gas, steam and air conditioning supply",2013,BA,2025000.0
+RS,35,D,"Electricity, gas, steam and air conditioning supply",2014,BA,2409000.0
+RS,49,H,Transportation and storage,2012,BA,6782000.0
+RS,49,H,Transportation and storage,2013,BA,9869000.0
+RS,49,H,Transportation and storage,2014,BA,7532000.0
+RU,09,B,Mining and quarrying,2012,RO,13917100000.0
+RU,09,B,Mining and quarrying,2013,RO,14145200000.0
+RU,09,B,Mining and quarrying,2014,RO,9784949800.0
+RU,19,C,Manufacturing,2017,QA,4904791878.0
+RU,19,C,Manufacturing,2018,QA,5573379286.0
+RU,19,C,Manufacturing,2019,QA,26530139445.0
+SA,06,B,Mining and quarrying,2017,AE,45684008.0
+SE,09,B,Mining and quarrying,2016,NO,231980000.0
+SE,09,B,Mining and quarrying,2017,NO,415306200.0
+SE,09,B,Mining and quarrying,2018,NO,528140000.0
+SE,09,B,Mining and quarrying,2019,NO,144486300.00000003
+SE,09,B,Mining and quarrying,2020,NO,512880000.0
+SE,24,C,Manufacturing,2018,NO,186385013.1
+SE,51,H,Transportation and storage,2013,DK,914869060.0
+SE,51,H,Transportation and storage,2014,DK,719139400.0
+SE,51,H,Transportation and storage,2014,NO,734549530.0
+SE,51,H,Transportation and storage,2015,DK,1303069320.0
+SE,51,H,Transportation and storage,2015,NO,651534660.0
+SE,51,H,Transportation and storage,2016,DK,1838933040.0
+SE,51,H,Transportation and storage,2016,NO,1234712184.0
+SE,51,H,Transportation and storage,2017,DK,1426827920.0
+SE,51,H,Transportation and storage,2017,NO,502447260.4
+SE,51,H,Transportation and storage,2018,DK,1362433800.0
+SE,51,H,Transportation and storage,2018,NO,480744498.0
+SE,51,H,Transportation and storage,2019,DK,1357815200.0
+SE,51,H,Transportation and storage,2020,DK,648229680.0
+SE,51,H,Transportation and storage,2021,DK,929104864.0
+TH,08,B,Mining and quarrying,2017,MY,3754.8
+TH,08,B,Mining and quarrying,2018,MY,12158.4
+TH,08,B,Mining and quarrying,2019,MY,28786.8
+TH,08,B,Mining and quarrying,2020,MY,4112.4
+UA,06,B,Mining and quarrying,2015,RU,124349000.0
+UA,06,B,Mining and quarrying,2016,RU,147978000.0
+UA,06,B,Mining and quarrying,2017,RU,158225000.0
+UA,06,B,Mining and quarrying,2018,RU,156601000.0
+UA,09,B,Mining and quarrying,2016,RU,1066000.0
+UA,09,B,Mining and quarrying,2017,RU,2305000.0
+UA,09,B,Mining and quarrying,2018,RU,2432000.0
+UA,09,B,Mining and quarrying,2019,RU,2051000.0
+UA,35,D,"Electricity, gas, steam and air conditioning supply",2016,RU,62014000.0
+UA,35,D,"Electricity, gas, steam and air conditioning supply",2017,RU,69966000.0
+UA,35,D,"Electricity, gas, steam and air conditioning supply",2018,RU,61564000.0
+UA,35,D,"Electricity, gas, steam and air conditioning supply",2019,RU,74684000.0
+UA,35,D,"Electricity, gas, steam and air conditioning supply",2020,RU,69420000.0
+UA,51,H,Transportation and storage,2016,RU,1818000.0
+UA,51,H,Transportation and storage,2017,RU,2713000.0
+UA,51,H,Transportation and storage,2018,RU,1612000.0
+UA,51,H,Transportation and storage,2019,RU,2521000.0
+US,09,B,Mining and quarrying,2020,CN,12942107.0
+US,29,C,Manufacturing,2017,NO,1045863700.0
+VN,35,D,"Electricity, gas, steam and air conditioning supply",2014,SG,3454457.0
+VN,35,D,"Electricity, gas, steam and air conditioning supply",2015,SG,2937424.0
+VN,51,H,Transportation and storage,2017,IN,103374829.6
+VN,51,H,Transportation and storage,2017,SG,103374829.6
+VN,51,H,Transportation and storage,2018,IN,116426328.0
+VN,51,H,Transportation and storage,2018,SG,116426328.0
+VN,51,H,Transportation and storage,2019,IN,108395840.0
+VN,51,H,Transportation and storage,2019,SG,108395840.0
+VN,51,H,Transportation and storage,2020,IN,37967140.0
+VN,51,H,Transportation and storage,2020,SG,77903530.0
+ZA,24,C,Manufacturing,2012,GH,105692200.0
+ZA,24,C,Manufacturing,2013,GH,92251500.0
+ZA,24,C,Manufacturing,2014,GH,82681400.0
+ZA,24,C,Manufacturing,2015,GH,65996600.0
+ZA,24,C,Manufacturing,2016,GH,64716800.0
+ZA,29,C,Manufacturing,2013,NO,12105069.6
+ZA,29,C,Manufacturing,2014,NO,17799133.200000003
+ZA,29,C,Manufacturing,2015,NO,15789783.6
