@@ -92,7 +92,7 @@ const linkArc = (d, s, t) => {
 
 
 const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
-  const logScale = d3.scaleLog().domain([Math.max(1, data.minWeight), data.maxWeight]).range([0.2, 4.0]);
+  const logScale = d3.scaleSymlog().domain([data.minWeight, data.maxWeight]).range([1.0, 4.0]);
   const links = data.links;
   const routes = avoidLinkOverlaps(links);
   const strokeColor = linkColor(links);
