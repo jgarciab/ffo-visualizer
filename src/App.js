@@ -5,6 +5,7 @@ import { createEmptyData, getCountryMap, getLocationNames, loadData } from './Da
 import React, { useState, useEffect } from 'react';
 import AppContext from './AppContext';
 import CountryTotals from './CountryTotals';
+import TimeSeriesChart from './TimeSeriesChart';
 
 function App() {
   // Pre-loaded (static) locations and map
@@ -153,8 +154,11 @@ function App() {
           </div>
 
           {/* Bar chart */}
-          <div className="overflow-x-scroll">
-            <CountryTotals />
+          <div className="flex flex-row">
+            <div className="overflow-x-scroll">
+              <CountryTotals />
+            </div>
+            <TimeSeriesChart />
           </div>
         </div>
       </div>

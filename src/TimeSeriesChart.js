@@ -1,12 +1,11 @@
 import { useD3 } from './hooks/useD3';
 import React, { useContext } from 'react';
 import AppContext from './AppContext';
-import BarChart from './charts/BarChart';
+import LineChart from './charts/LineChart';
 
-function CountryTotals() {
+function TimeSeriesChart() {
   const { data } = useContext(AppContext);
-  const totals = data.totals.slice(0, 20); // fix at top 20 values
-  const width = totals.length * 28 + 100;
+  const timeSeries = data.timeSeries;
 
   const ref = useD3(
     (svg) => {
@@ -14,11 +13,12 @@ function CountryTotals() {
       // Clean up
       svg.selectAll("*").remove();
 
-      BarChart(svg, totals, {
-        x: d => d.sourceName,
+      LineChart(svg, timeSeries, {
+        x: d => d.year,
         y: d => d.weight_total,
-        width: width,
-        marginLeft: 40,
+        z: d => d.sourceName,
+        width: 480,
+        marginLeft: 60,
         color: 'steelblue'
       });
     },
@@ -28,12 +28,12 @@ function CountryTotals() {
     <svg
       ref={ref}
       style={{
-        width: width,
-        height: "420"
+        width: 520,
+        height: 460
       }}
     >
     </svg>
   );
 }
 
-export default CountryTotals;
+export default TimeSeriesChart;

@@ -30,6 +30,7 @@ const createEmptyData = () => { return {
   links: [],
   nodes: [],
   totals: [],
+  timeSeries: [],
   categories: [] 
 }};
 
@@ -127,6 +128,13 @@ const loadData = async (file) => {
   data.totals = dfd.toJSON(dfTotals);
   console.log(data.totals);
 
+  // Time series
+  let dfTime = df.groupby(['source', 'sourceName', 'year']).col([weightColumn]).sum();
+  dfTime.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
+  dfTime.sortValues('year', { ascending: false, inplace: true });
+  data.timeSeries = dfd.toJSON(dfTime);
+
+  //TODO: remove
   // Group and aggregate by source-&-target
   // df = df.groupby(['source', 'target']).col([weightColumn]).sum();
   // df.rename({ 'weight_sum': weightColumn }, { inplace: true });
