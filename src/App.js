@@ -70,7 +70,7 @@ function App() {
 
     // Filter for categories
     Object.keys(selectedCategories).forEach(key => {
-      result.links = result.links.filter(link => selectedCategories[key].includes(link[key].toString()))
+      result.links = result.links.filter(link => selectedCategories[key].includes(link[key]?.toString()))
     });
     result.linkCountAfterCategories = result.links.length;
 
