@@ -2,7 +2,7 @@
 
 # Geoflow Visualizer
 
-Visualizes any type of flow between countries.
+Visualizes any type of flow between countries. Takes a CSV as input, applies filtering and aggregation (danfojs) to show relations and data in a number of visualizations (d3.js)
 
 # Demo
 
@@ -23,3 +23,16 @@ Nodejs + npm
 ## Usage
 
 Use the file selector to select a CSV file that at least has the columns `source`, `target` and `weight`.
+
+## Development
+
+The CSV data is loaded and processed with danfojs, the javascript implementation of pandas. Processing includes filtering, grouping and aggregating.
+
+Visualization is done purely in d3.js. 
+
+### Maps, countries, projections
+The world map is a topojson file: [world_countries_neocarto.json](src/data/world_countries_neocarto.json). Currently, only the geometries are used (to display the map), the other properties are ignored.
+
+The capital of each country is used as its location (the node the arrows point to/from). Country capital positions are linked to the topojson (and the data) with their ISO-2 country codes. This data is in [country-capitals.json](src/data/country-capitals.json). This is also where the country names (labels) are from.
+
+The current map projection is [geoAitoff](https://github.com/d3/d3-geo-projection#geoAitoff) and is set in the GeoFlowVis component.
