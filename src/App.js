@@ -1,31 +1,26 @@
 import './App.css';
-import GeoFlowVis from './GeoFlowVis';
-import MultiSelect from './MultiSelect';
-import { createEmptyData, getCountryMap, getLocationNames, loadData } from './DataStore';
 import React, { useState, useEffect } from 'react';
+import { observer, useLocalObservable } from 'mobx-react-lite';
 import AppContext from './AppContext';
+import { getCountryMap, getLocationNames } from './DataStore';
+import DataModel from './DataModel';
+import MultiSelect from './MultiSelect';
+import GeoFlowVis from './GeoFlowVis';
 import CountryTotals from './CountryTotals';
 import TimeSeriesChart from './TimeSeriesChart';
+import { action } from 'mobx';
 
-function App() {
+const App = observer(() => {
+  const dataStore = useLocalObservable(() => new DataModel());
+
   // Pre-loaded (static) locations and map
-  const [allLocations] = useState(getLocationNames());
   const [countryMap] = useState(getCountryMap());
   
-  // The data from the csv file
-  const [data, setData] = useState(createEmptyData());
-  
   // Locations extracted from the data (to fill sources & targets)
-  const [usedLocations, setUsedLocations] = useState([]);
-  
+  const usedLocations = dataStore.usedLocations;
+
   // Selection state
   const [topN, setTopN] = useState(20);
-  const [selectedSources, setSelectedSources] = useState([]);
-  const [selectedTargets, setSelectedTargets] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState({}); // object with arrays
-  
-  // The data after being filtered for sources/targets/categories
-  const [filteredData, setFilteredData] = useState(createEmptyData());
 
   // Error object to display in dialog
   const [error, setError] = useState();
@@ -35,7 +30,7 @@ function App() {
     const fileList = event.target.files;
     if (fileList.length > 0) {
       try {
-        setData(await loadData(fileList[0]));
+        await dataStore.loadData(fileList[0]);
       }
       catch(e) {
         setError(e);
@@ -46,7 +41,7 @@ function App() {
 
   const loadDemoData = async (fileName) => {
     try {
-      setData(await loadData(`${window.PUBLIC_URL}/data/${fileName}`));
+      await dataStore.loadData(`${window.PUBLIC_URL}/data/${fileName}`);
     }
     catch(e) {
       setError(e);
@@ -55,74 +50,50 @@ function App() {
   };
 
   // Handle category selection
-  const changeCategorySelection = (category, selection) => {
-    const newSelectedCategories = { ...selectedCategories };
-    newSelectedCategories[category.name] = selection;
-    setSelectedCategories(newSelectedCategories);
-  }
+  // const changeCategorySelection = (category, selection) => {
+  //   const newSelectedCategories = { ...dataStore.selectedCategories };
+  //   newSelectedCategories[category.name] = selection;
+  //   setSelectedCategories(newSelectedCategories);
+  // }
 
-  // updateFilteredData
-  useEffect(() => {
-    const result = { ...data };
-
-    // Filter links for source OR target in selection
-    result.links = result.links.filter(link => selectedSources.includes(link.source) || selectedTargets.includes(link.target));
-
-    // Filter for categories
-    Object.keys(selectedCategories).forEach(key => {
-      result.links = result.links.filter(link => selectedCategories[key].includes(link[key]?.toString()))
-    });
-    result.linkCountAfterCategories = result.links.length;
-
-    // First make sure the top-N value is within range or take a sensible default if needed (20)
-    if (topN === 0 && result.linkCountAfterCategories > 0) {
-      setTopN(Math.min(20, result.linkCountAfterCategories));
-    }
-    if (topN > result.linkCountAfterCategories) {
-      setTopN(result.linkCountAfterCategories);
-    }
-
-    // Select top-N connections
-    result.links = result.links.slice(0, topN);
-
-    // List of nodes used as link source or target
-    const nodes = new Set();
-    result.links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
-    result.nodes = [...nodes];
-
-    setFilteredData(result);
-  }, [topN, selectedSources, selectedTargets, selectedCategories, data]);
+  // // updateFilteredData
+  // useEffect(() => {
+  //   if (data.df !== undefined) {
+  //     const result = filterData(data, {topN, selectedSources, selectedTargets, selectedCategories});
+  //     setFilteredData(result);
+  //   }
+  // }, [topN, selectedSources, selectedTargets, selectedCategories, data]);
 
   // updateUsedLocations
-  useEffect(() => {
-    const result = {};
-    //const topNSources = data.totals.slice(0, topN).map(el => el.source);
-    for (const [key, value] of Object.entries(allLocations)) {
-      if (data.links.find(el => el.source === key || el.target === key)) { //&& topNSources.includes(el.source)
-        result[key] = value;
-      }
-    }
-    setUsedLocations(result);
+  // useEffect(() => {
+  //   const result = {};
+  //   //const topNSources = data.totals.slice(0, topN).map(el => el.source);
+  //   for (const [key, value] of Object.entries(allLocations)) {
+  //     if (data.links.find(el => el.source === key || el.target === key)) { //&& topNSources.includes(el.source)
+  //       result[key] = value;
+  //     }
+  //   }
+  //   setUsedLocations(result);
 
-    // By default, select all sources, targets and categories
-    setSelectedSources(Object.keys(result));
-    setSelectedTargets(Object.keys(result));
-    setSelectedCategories(data.categories.reduce((selectionObj, category) => {
-      selectionObj[category.name] = category.values;
-      return selectionObj;
-    }, {}));
-  }, [setUsedLocations, data, allLocations]) //topN
+  //   // By default, select all sources, targets and categories
+  //   setSelectedSources(Object.keys(result));
+  //   setSelectedTargets(Object.keys(result));
+  //   setSelectedCategories(data.categories.reduce((selectionObj, category) => {
+  //     selectionObj[category.name] = category.values;
+  //     return selectionObj;
+  //   }, {}));
+  // }, [setUsedLocations, data, allLocations]) //topN
 
-  // These variables will be available through the AppContext
-  const globalData = {
-    data, setData,
-    filteredData, setFilteredData
-  };
+  // // These variables will be available through the AppContext
+  // const globalData = {
+  //   //data, setData,
+  //   filteredData, setFilteredData
+  // };
 
-  const totalLinks = data.links.length;
+//  const totalLinks = data.links?.length;
 
   return (
-    <AppContext.Provider value={globalData} data-theme="lemonade">
+    <AppContext.Provider value={null} data-theme="lemonade">
 
       <div className="App flex mb-4">
         <div className="w-1/4 z-30">
@@ -132,17 +103,17 @@ function App() {
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
             or load a demo: <a href="#!"><button onClick={() => loadDemoData("demo_ffo.csv")}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
             demo 2 (time series): <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
-            Link count: {totalLinks}
+            {/* Link count: {totalLinks} */}
           </div>
-          <MultiSelect label="Sources" options={usedLocations} selection={selectedSources} onChanged={selection => setSelectedSources(selection)} />
-          <MultiSelect label="Targets" options={usedLocations} selection={selectedTargets} onChanged={selection => setSelectedTargets(selection)} />
-          { data.categories.map(category => (
-            <MultiSelect key={category.name} label={category.name} options={category.values} selection={selectedCategories[category.name] || []} onChanged={selection => changeCategorySelection(category, selection)} />
+          <MultiSelect label="Sources" options={usedLocations} selection={dataStore.selectedSources} onChanged={action(selection => dataStore.selectedSources = selection)} />
+          <MultiSelect label="Targets" options={usedLocations} selection={dataStore.selectedTargets} onChanged={action(selection => dataStore.selectedTargets = selection)} />
+          { dataStore.categories.map(category => (
+            <MultiSelect key={category.name} label={category.name} options={category.values} selection={dataStore.selectedCategories[category.name] || []} onChanged={action(selection => dataStore.selectedCategories[category.name] = selection)} />
           ))}
-          <div className="border border-base-300 bg-base-100 rounded-box p-4">
+          {/* <div className="border border-base-300 bg-base-100 rounded-box p-4">
             <span>Top {topN}/{filteredData.linkCountAfterCategories} connections</span>
             <input type="range" className="range" min="1" max={Math.min(1000, filteredData.linkCountAfterCategories)} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
-          </div>
+          </div> */}
         </div>
         
         {/* Main content */}
@@ -150,15 +121,15 @@ function App() {
 
           {/* Map visualization */}
           <div className="">
-            <GeoFlowVis countryMap={countryMap}/>
+            <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks}/>
           </div>
 
           {/* Bar chart */}
           <div className="flex flex-row">
             <div className="overflow-x-scroll">
-              <CountryTotals />
+              {/* <CountryTotals /> */}
             </div>
-            <TimeSeriesChart />
+            {/* <TimeSeriesChart /> */}
           </div>
         </div>
       </div>
@@ -178,6 +149,6 @@ function App() {
 
     </AppContext.Provider>
   );
-}
+});
 
 export default App;

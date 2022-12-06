@@ -1,13 +1,11 @@
 import { useD3 } from './hooks/useD3';
-import React, { Fragment, useContext, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
-import AppContext from './AppContext';
 import { getLocationMap } from './DataStore';
 
-function GeoFlowVis({ countryMap }) {
-  const { filteredData } = useContext(AppContext);
+function GeoFlowVis({ countryMap, filteredData }) {
   const [tooltipData, setTooltipData] = useState(null);
 
   const showTooltip = (event, data) => {
