@@ -1,8 +1,8 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { observer, useLocalObservable } from 'mobx-react-lite';
 import AppContext from './AppContext';
-import { getCountryMap, getLocationNames } from './DataStore';
+import { getCountryMap, getLocationNames } from './GeoData';
 import DataModel from './DataModel';
 import MultiSelect from './MultiSelect';
 import GeoFlowVis from './GeoFlowVis';

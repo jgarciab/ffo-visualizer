@@ -3,7 +3,8 @@ import React, { Fragment, useState } from 'react';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
-import { getLocationMap } from './DataStore';
+import { getLocationMap } from './GeoData';
+import { humanFormatNumber } from './Util';
 
 function GeoFlowVis({ countryMap, filteredData }) {
   const [tooltipData, setTooltipData] = useState(null);
@@ -64,7 +65,7 @@ function GeoFlowVis({ countryMap, filteredData }) {
           visibility: tooltipData ? 'visible' : 'hidden'}}>
         Source: {tooltipData && tooltipData.sourceName}<br />
         Target: {tooltipData && tooltipData.targetName}<br />
-        Weight: {tooltipData && tooltipData.weight}
+        Weight: {tooltipData && humanFormatNumber(tooltipData.weight)}
       </div>
     </Fragment>
   );

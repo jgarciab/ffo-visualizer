@@ -1,6 +1,6 @@
 import * as dfd from 'danfojs';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { getLocationNames } from './DataStore';
+import { getLocationNames } from './GeoData';
 
 /** This class contains the data model and is a mobx Observable.
  */
@@ -26,7 +26,7 @@ export default class DataModel {
     makeAutoObservable(this);
   }
 
-  weightColumn = 'scaled_weight';
+  weightColumn = 'weight';
 
   /**
    * Loads a CSV, does some basic processing and stores results in dataframes.
@@ -77,11 +77,6 @@ export default class DataModel {
     // Sort by weight of connections
     df = df.sortValues('weight', { ascending: false });
     df.resetIndex({ inplace: true });
-  
-    //TODO: we really don't want to hard-code scaling
-    const scaledWeight = df['weight'].apply(v => v / 1000000000, { axis: 1 });
-    df.addColumn(this.weightColumn, scaledWeight, { inplace: true });
-
 
     // Split links to self and links to other countries
     let dfLinkToSelf = df.query(df['source'].eq(df['target']));
