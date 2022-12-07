@@ -114,7 +114,7 @@ export default class DataModel {
 
     const sourceSelected = df['source'].map(source => this.selectedSources.includes(source));
     const targetSelected = df['target'].map(target => this.selectedTargets.includes(target));
-    let rowSelected = sourceSelected.or(targetSelected);
+    let rowSelected = sourceSelected.and(targetSelected);
 
     // Filter for categories
     Object.keys(this.selectedCategories).forEach(key => {
