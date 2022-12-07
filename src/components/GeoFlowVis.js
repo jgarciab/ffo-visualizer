@@ -1,12 +1,11 @@
-import { useD3 } from './hooks/useD3';
 import React, { Fragment, useState } from 'react';
+import { useD3 } from './useD3';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
-import { getLocationMap } from './GeoData';
-import { humanFormatNumber } from './Util';
+import { humanFormatNumber } from './util';
 
-function GeoFlowVis({ countryMap, filteredData }) {
+function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
   const [tooltipData, setTooltipData] = useState(null);
 
   const showTooltip = (event, data) => {
@@ -43,7 +42,7 @@ function GeoFlowVis({ countryMap, filteredData }) {
 
       // Render links
       if (filteredData.links.length > 0) {
-        visualizeLinks(filteredData, projection, svg, getLocationMap(), showTooltip);
+        visualizeLinks(filteredData, projection, svg, locationMapping, showTooltip);
       }
     },
   [filteredData]);

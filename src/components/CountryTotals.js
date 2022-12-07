@@ -1,7 +1,7 @@
-import { useD3 } from './hooks/useD3';
+import { useD3 } from './useD3';
 import React from 'react';
 import BarChart from './charts/BarChart';
-import { humanFormatNumber } from './Util';
+import { humanFormatNumber } from './util';
 
 function CountryTotals({data}) {
   const totals = data.totals.slice(0, 20); // fix at top 20 values

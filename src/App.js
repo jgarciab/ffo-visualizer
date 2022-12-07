@@ -2,18 +2,19 @@ import './App.css';
 import React, { useState } from 'react';
 import { action } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
-import { getCountryMap } from './GeoData';
-import DataModel from './DataModel';
-import MultiSelect from './MultiSelect';
-import GeoFlowVis from './GeoFlowVis';
-import CountryTotals from './CountryTotals';
-import TimeSeriesChart from './TimeSeriesChart';
+import { getCountryMap, getLocationMap } from './GeoData';
+import DataStore from './DataStore';
+import MultiSelect from './components/MultiSelect';
+import GeoFlowVis from './components/GeoFlowVis';
+import CountryTotals from './components/CountryTotals';
+import TimeSeriesChart from './components/TimeSeriesChart';
 
 const App = observer(() => {
-  const dataStore = useLocalObservable(() => new DataModel());
+  const dataStore = useLocalObservable(() => new DataStore());
 
   // Pre-loaded (static) locations and map
   const [countryMap] = useState(getCountryMap());
+  const [locationMapping] = useState(getLocationMap());
   
   // Locations extracted from the data (to fill sources & targets)
   const usedLocations = dataStore.usedLocations;
@@ -74,7 +75,7 @@ const App = observer(() => {
 
           {/* Map visualization */}
           <div className="">
-            <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks}/>
+            <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks} locationMapping={locationMapping} />
           </div>
 
           {/* Bar chart */}

@@ -9,7 +9,7 @@ const FIXED_COLUMNS = [COLUMN_SOURCE, COLUMN_TARGET, COLUMN_WEIGHT];
 
 /** This class contains the data model and is a mobx Observable.
  */
-export default class DataModel {
+export default class DataStore {
 
   allLocations = getLocationNames();
 

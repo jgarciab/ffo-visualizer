@@ -1,7 +1,7 @@
-import { useD3 } from './hooks/useD3';
+import { useD3 } from './useD3';
 import React from 'react';
 import LineChart from './charts/LineChart';
-import { humanFormatNumber } from './Util';
+import { humanFormatNumber } from './util';
 
 function TimeSeriesChart({data}) {
   const timeSeries = data.timeSeries;
