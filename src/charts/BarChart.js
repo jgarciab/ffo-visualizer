@@ -20,9 +20,10 @@ function BarChart(svg, data, {
   yDomain, // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
   xPadding = 0.1, // amount of x-range to reserve to separate bars
-  yFormat, // a format specifier string for the y-axis
   yLabel, // a label for the y-axis
-  color = "currentColor" // bar fill color
+  color = "currentColor", // bar fill color
+  xFormatFunc = x => `${x}`,
+  yFormatFunc = y => `${y}`
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -39,13 +40,12 @@ function BarChart(svg, data, {
   // Construct scales, axes, and formats.
   const xScale = d3.scaleBand(xDomain, xRange).padding(xPadding);
   const yScale = yType(yDomain, yRange);
-  const xAxis = d3.axisBottom(xScale).tickSizeOuter(0);
-  const yAxis = d3.axisLeft(yScale).ticks(height / 40, yFormat);
+  const xAxis = d3.axisBottom(xScale).tickSizeOuter(0).tickFormat(xFormatFunc);
+  const yAxis = d3.axisLeft(yScale).ticks(height / 40).tickFormat(yFormatFunc);
 
   // Compute titles.
   if (title === undefined) {
-    const formatValue = yScale.tickFormat(100, yFormat);
-    title = i => `${X[i]}\n${formatValue(Y[i])}`;
+    title = i => `${X[i]}`;
   } else {
     const O = d3.map(data, d => d);
     const T = title;

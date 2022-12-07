@@ -1,6 +1,7 @@
 import { useD3 } from './hooks/useD3';
 import React from 'react';
 import LineChart from './charts/LineChart';
+import { humanFormatNumber } from './Util';
 
 function TimeSeriesChart({data}) {
   const timeSeries = data.timeSeries;
@@ -17,7 +18,8 @@ function TimeSeriesChart({data}) {
         z: d => d.sourceName,
         width: 480,
         marginLeft: 60,
-        color: 'steelblue'
+        color: 'steelblue',
+        yFormatFunc: humanFormatNumber
       });
     },
   [data]);

@@ -16,6 +16,7 @@ export default class DataModel {
   dfCountryTotals = null;
   dfTimeSeries = null;
 
+  entryCount = 0;
   categories = [];
   minWeight = 0;
   maxWeight = 0;
@@ -98,6 +99,7 @@ export default class DataModel {
       this.dfLinkToSelf = dfLinkToSelf;
       this.dfLinkToOther = dfLinkToOther;
       this.categories = categories;
+      this.entryCount = df.shape[0];
 
       // Min/max weights
       this.minWeight = dfLinkToOther[this.weightColumn].min();
@@ -162,7 +164,7 @@ export default class DataModel {
     if (links === null ) {
       return { links: [], nodes: [], totals: [], timeSeries: [] }
     }
-
+    console.log("NODES & LINKS")
     // Links
     links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
     links.forEach(d => d['weight'] = d[this.weightColumn]);

@@ -1,6 +1,7 @@
 import { useD3 } from './hooks/useD3';
 import React from 'react';
 import BarChart from './charts/BarChart';
+import { humanFormatNumber } from './Util';
 
 function CountryTotals({data}) {
   const totals = data.totals.slice(0, 20); // fix at top 20 values
@@ -17,7 +18,8 @@ function CountryTotals({data}) {
         y: d => d.weight_total,
         width: width,
         marginLeft: 40,
-        color: 'steelblue'
+        color: 'steelblue',
+        yFormatFunc: humanFormatNumber
       });
     },
   [data]);

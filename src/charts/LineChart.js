@@ -23,7 +23,6 @@ function LineChart(svg, data, {
   yType = d3.scaleSymlog, // type of y-scale
   yDomain, // [ymin, ymax]
   yRange = [height - marginBottom, marginTop], // [bottom, top]
-  yFormat, // a format specifier string for the y-axis
   yLabel, // a label for the y-axis
   zDomain, // array of z-values
   color = "currentColor", // stroke color of line, as a constant or a function of *z*
@@ -31,7 +30,9 @@ function LineChart(svg, data, {
   strokeLinejoin, // stroke line join of line
   strokeWidth = 1.5, // stroke width of line
   strokeOpacity, // stroke opacity of line
-  mixBlendMode = "multiply" // blend mode of lines
+  mixBlendMode = "multiply", // blend mode of lines
+  xFormatFunc = x => `${x}`,
+  yFormatFunc = y => `${y}`
 } = {}) {
   // Compute values.
   const X = d3.map(data, x);
@@ -53,8 +54,8 @@ function LineChart(svg, data, {
   // Construct scales and axes.
   const xScale = xType(xDomain, xRange);
   const yScale = yType(yDomain, yRange);
-  const xAxis = d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0);
-  const yAxis = d3.axisLeft(yScale).ticks(height / 60, yFormat);
+  const xAxis = d3.axisBottom(xScale).ticks(width / 80).tickSizeOuter(0).tickFormat(xFormatFunc);
+  const yAxis = d3.axisLeft(yScale).ticks(height / 60).tickFormat(yFormatFunc);
 
   // Compute titles.
   const T = title === undefined ? Z : title === null ? null : d3.map(data, title);

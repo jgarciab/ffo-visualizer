@@ -48,8 +48,6 @@ const App = observer(() => {
     }
   };
 
-//  const totalLinks = data.links?.length;
-
   return (
     <div data-theme="lemonade">
 
@@ -61,7 +59,7 @@ const App = observer(() => {
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
             or load a demo: <a href="#!"><button onClick={() => loadDemoData("demo_ffo.csv")}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
             demo 2 (time series): <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
-            {/* Link count: {totalLinks} */}
+            Row count: {dataStore.entryCount}
           </div>
           <MultiSelect label="Sources" options={usedLocations} selection={dataStore.selectedSources} onChanged={action(selection => dataStore.selectedSources = selection)} />
           <MultiSelect label="Targets" options={usedLocations} selection={dataStore.selectedTargets} onChanged={action(selection => dataStore.selectedTargets = selection)} />
