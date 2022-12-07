@@ -16,7 +16,6 @@ export default class DataModel {
   dfCountryTotals = null;
   dfTimeSeries = null;
 
-  entryCount = 0;
   categories = [];
   minWeight = 0;
   maxWeight = 0;
@@ -24,6 +23,7 @@ export default class DataModel {
   selectedSources = [];
   selectedTargets = [];
   selectedCategories = {};
+  topN = 20;
 
 
   constructor() {
@@ -78,10 +78,6 @@ export default class DataModel {
     df = df.groupby(columns).col(['weight']).sum();
     df.rename({ 'weight_sum': 'weight' }, { inplace: true });
 
-    // Sort by weight of connections
-    df = df.sortValues('weight', { ascending: false });
-    df.resetIndex({ inplace: true });
-
     // Split links to self and links to other countries
     let dfLinkToSelf = df.query(df['source'].eq(df['target']));
     if (dfLinkToSelf.shape[0] > 0) {
@@ -99,7 +95,6 @@ export default class DataModel {
       this.dfLinkToSelf = dfLinkToSelf;
       this.dfLinkToOther = dfLinkToOther;
       this.categories = categories;
-      this.entryCount = df.shape[0];
 
       // Min/max weights
       this.minWeight = dfLinkToOther[this.weightColumn].min();
@@ -118,7 +113,32 @@ export default class DataModel {
     });
   };
 
-  
+  /** Returns a "dictionary" object of the sources and targets that are actually used in the loaded dataset,
+   *  mapping ISO-2 country codes to country names. */
+   get usedLocations() {
+    if (this.dfAllData === null) {
+      return [];
+    }
+    const sources = this.dfAllData['source'].unique().values;
+    const targets = this.dfAllData['target'].unique().values;
+
+    const result = {};
+    for (const [key, value] of Object.entries(this.allLocations)) {
+      if (sources.includes(key) || targets.includes(key)) {
+        result[key] = value;
+      }
+    }
+    return result;
+  }
+
+  get entryCount() {
+    return this.dfAllData === null ? 0 : this.dfAllData.shape[0];
+  }
+
+  get linkCountAfterProcessing() {
+    return this.dfLinkTotals === null ? 0 : this.dfLinkTotals.shape[0];
+  }
+
   get filteredDataFrame() {
     let df = this.dfLinkToOther;
     if (df === null) {
@@ -141,44 +161,6 @@ export default class DataModel {
     let dfFiltered = df.query(df['selected']);
     this.dfFiltered = dfFiltered;
     return dfFiltered;
-
-    // // First make sure the top-N value is within range or take a sensible default if needed (20)
-    // if (topN === 0 && result.linkCountAfterCategories > 0) {
-    //   setTopN(Math.min(20, result.linkCountAfterCategories));
-    // }
-    // if (topN > result.linkCountAfterCategories) {
-    //   setTopN(result.linkCountAfterCategories);
-    // }
-    
-    // // Select top-N connections
-    // result.links = result.links.slice(0, topN);
-    
-    
-    // return data;
-  }
-
-  /** Converts the dataframe to an object with links and nodes
-   */
-  get nodesAndLinks() {
-    const links = this.aggregatedByLink;
-    if (links === null ) {
-      return { links: [], nodes: [], totals: [], timeSeries: [] }
-    }
-    console.log("NODES & LINKS")
-    // Links
-    links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
-    links.forEach(d => d['weight'] = d[this.weightColumn]);
-    links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
-
-    // Nodes (link source or target)
-    const nodes = new Set();
-    links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
-
-    // Totals and time series
-    const totals = this.aggregatedBySource;
-    const timeSeries = this.timeSeriesData;
-
-    return { links, nodes: [...nodes], totals, timeSeries, minWeight: this.minWeight, maxWeight: this.maxWeight };
   }
 
   /** Aggregate weight by link (source & target), used to display max 1 link between source & target pairs */
@@ -189,8 +171,25 @@ export default class DataModel {
     }
     let dfAggregated = df.groupby(['source', 'sourceName', 'target', 'targetName']).col([this.weightColumn]).sum();
     dfAggregated.rename({ [`${this.weightColumn}_sum`]: 'weight' }, { inplace: true });
-    this.dfLinkTotals = dfAggregated;
-    return dfd.toJSON(dfAggregated);
+
+    // Sort
+    dfAggregated = dfAggregated.sortValues('weight', { ascending: false });
+    dfAggregated.resetIndex({ inplace: true });
+
+    // Check if topN has proper value
+    const linkCountAfterProcessing = dfAggregated.shape[0];
+    if (this.topN === 0 && linkCountAfterProcessing > 0) {
+      this.topN = Math.min(20, linkCountAfterProcessing)
+    }
+    if (this.topN > linkCountAfterProcessing) {
+      this.topN = linkCountAfterProcessing;
+    }
+
+    runInAction(() => {
+      this.dfLinkTotals = dfAggregated;
+    });
+    const links = dfd.toJSON(dfAggregated);
+    return links.slice(0, this.topN);
   }
 
   /** Aggregate weight by source country */
@@ -238,22 +237,28 @@ export default class DataModel {
     return dfd.toJSON(dfTime);
   }
 
-  /** Returns a "dictionary" object of the sources and targets that are actually used in the loaded dataset,
-   *  mapping ISO-2 country codes to country names. */
-  get usedLocations() {
-    if (this.dfAllData === null) {
-      return [];
+  /** Wraps the filtered and aggregated data in an object to be used by the visualization components.
+   */
+   get nodesAndLinks() {
+    const links = this.aggregatedByLink;
+    if (links === null ) {
+      return { links: [], nodes: [], totals: [], timeSeries: [] }
     }
-    const sources = this.dfAllData['source'].unique().values;
-    const targets = this.dfAllData['target'].unique().values;
 
-    const result = {};
-    for (const [key, value] of Object.entries(this.allLocations)) {
-      if (sources.includes(key) || targets.includes(key)) {
-        result[key] = value;
-      }
-    }
-    return result;
+    // Links
+    links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
+    links.forEach(d => d['weight'] = d[this.weightColumn]);
+    links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
+
+    // Nodes (link source or target)
+    const nodes = new Set();
+    links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
+
+    // Totals and time series
+    const totals = this.aggregatedBySource;
+    const timeSeries = this.timeSeriesData;
+
+    return { links, nodes: [...nodes], totals, timeSeries, minWeight: this.minWeight, maxWeight: this.maxWeight };
   }
 
 }

@@ -18,9 +18,6 @@ const App = observer(() => {
   // Locations extracted from the data (to fill sources & targets)
   const usedLocations = dataStore.usedLocations;
 
-  // Selection state
-  const [topN, setTopN] = useState(20);
-
   // Error object to display in dialog
   const [error, setError] = useState();
 
@@ -66,10 +63,10 @@ const App = observer(() => {
           { dataStore.categories.map(category => (
             <MultiSelect key={category.name} label={category.name} options={category.values} selection={dataStore.selectedCategories[category.name] || []} onChanged={action(selection => dataStore.selectedCategories[category.name] = selection)} />
           ))}
-          {/* <div className="border border-base-300 bg-base-100 rounded-box p-4">
-            <span>Top {topN}/{filteredData.linkCountAfterCategories} connections</span>
-            <input type="range" className="range" min="1" max={Math.min(1000, filteredData.linkCountAfterCategories)} step="1" value={topN} onChange={e => setTopN(e.target.value)}/>
-          </div> */}
+          <div className="border border-base-300 bg-base-100 rounded-box p-4">
+            <span>Top {dataStore.topN}/{dataStore.linkCountAfterProcessing} connections</span>
+            <input type="range" className="range" min="1" max={Math.min(1000, dataStore.linkCountAfterProcessing)} step="1" value={dataStore.topN} onChange={action(e => dataStore.topN = e.target.value)}/>
+          </div>
         </div>
         
         {/* Main content */}
