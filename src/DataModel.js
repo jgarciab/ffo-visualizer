@@ -2,6 +2,11 @@ import * as dfd from 'danfojs';
 import { makeAutoObservable, runInAction } from 'mobx';
 import { getLocationNames } from './GeoData';
 
+const COLUMN_SOURCE = 'source';
+const COLUMN_TARGET = 'target';
+const COLUMN_WEIGHT = 'weight';
+const FIXED_COLUMNS = [COLUMN_SOURCE, COLUMN_TARGET, COLUMN_WEIGHT];
+
 /** This class contains the data model and is a mobx Observable.
  */
 export default class DataModel {
@@ -30,8 +35,6 @@ export default class DataModel {
     makeAutoObservable(this);
   }
 
-  weightColumn = 'weight';
-
   /**
    * Loads a CSV, does some basic processing and stores results in dataframes.
    */
@@ -49,14 +52,14 @@ export default class DataModel {
       throw new Error("No data found in file");
     }
     // Check if the required columns are present
-    if (!['source', 'target', 'weight'].reduce((found, column) => found && df.columns.includes(column), true)) {
-      throw new Error("One or more required columns ('source', 'target', 'weight') not found");
+    if (!FIXED_COLUMNS.reduce((found, column) => found && df.columns.includes(column), true)) {
+      throw new Error(`One or more required columns (${FIXED_COLUMNS}) not found`);
     }
   
     // Determine categories (all columns beside the standard ones will be categories)
     let categories = [];
     for (const column of df.columns) {
-      if (!['source', 'target', 'weight'].includes(column)) {
+      if (!FIXED_COLUMNS.includes(column)) {
         categories.push({
           name: column,
           values: df[column].unique().values.sort().map(val => val.toString())
@@ -74,9 +77,9 @@ export default class DataModel {
     // Merge duplicates (and sum weights)
     // TODO: this only applies if the data is not so well structured,
     // (e.g. user didn't include a column & didn't aggregate) maybe give a warning instead?
-    const columns = df.columns.filter(item => item !== 'weight');
-    df = df.groupby(columns).col(['weight']).sum();
-    df.rename({ 'weight_sum': 'weight' }, { inplace: true });
+    const columns = df.columns.filter(item => item !== COLUMN_WEIGHT);
+    df = df.groupby(columns).col([COLUMN_WEIGHT]).sum();
+    df.rename({ [`${COLUMN_WEIGHT}_sum`]: COLUMN_WEIGHT }, { inplace: true });
 
     // Split links to self and links to other countries
     let dfLinkToSelf = df.query(df['source'].eq(df['target']));
@@ -87,7 +90,6 @@ export default class DataModel {
     if (dfLinkToOther.shape[0] > 0) {
       dfLinkToOther.resetIndex({ inplace: true });
     }
-    console.log(df.shape, dfLinkToSelf.shape, dfLinkToOther.shape);
   
     // Update model properties (needs runInAction because async)
     runInAction(() => {
@@ -97,10 +99,8 @@ export default class DataModel {
       this.categories = categories;
 
       // Min/max weights
-      this.minWeight = dfLinkToOther[this.weightColumn].min();
-      this.maxWeight = dfLinkToOther[this.weightColumn].max();
-      console.log(this.minWeight, this.maxWeight);
-      //console.log(dfLinkToOther.query(dfLinkToOther[this.weightColumn].lt(1000)));
+      this.minWeight = dfLinkToOther[COLUMN_WEIGHT].min();
+      this.maxWeight = dfLinkToOther[COLUMN_WEIGHT].max();
 
       // Default selection
       const usedLocations = this.usedLocations;
@@ -169,11 +169,11 @@ export default class DataModel {
     if (df === null || df.shape[0] === 0) {
       return null;
     }
-    let dfAggregated = df.groupby(['source', 'sourceName', 'target', 'targetName']).col([this.weightColumn]).sum();
-    dfAggregated.rename({ [`${this.weightColumn}_sum`]: 'weight' }, { inplace: true });
+    let dfAggregated = df.groupby(['source', 'sourceName', 'target', 'targetName']).col([COLUMN_WEIGHT]).sum();
+    dfAggregated.rename({ [`${COLUMN_WEIGHT}_sum`]: COLUMN_WEIGHT }, { inplace: true });
 
     // Sort
-    dfAggregated = dfAggregated.sortValues('weight', { ascending: false });
+    dfAggregated = dfAggregated.sortValues(COLUMN_WEIGHT, { ascending: false });
     dfAggregated.resetIndex({ inplace: true });
 
     // Check if topN has proper value
@@ -200,20 +200,19 @@ export default class DataModel {
     }
     const dfLinkToSelf = this.dfLinkToSelf;
     const dfLinkToOther = this.dfLinkToOther;
-    const weightColumn = this.weightColumn;
 
     // Calculate country totals
-    let dfTotals = df.groupby(['source', 'sourceName']).col([weightColumn]).sum();
-    dfTotals.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
+    let dfTotals = df.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+    dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
   
     if (dfLinkToSelf.shape[0] > 0) {
-      const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([weightColumn]).sum();
-      dfTotalsSelf.rename({ [`${weightColumn}_sum`]: 'weight_self' }, { inplace: true });
+      const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+      dfTotalsSelf.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_self' }, { inplace: true });
       dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
     }
     if (dfLinkToOther.shape[0] > 0) {
-      const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([weightColumn]).sum();
-      dfTotalsOther.rename({ [`${weightColumn}_sum`]: 'weight_other' }, { inplace: true });
+      const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+      dfTotalsOther.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_other' }, { inplace: true });
       dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
     }
   
@@ -227,11 +226,10 @@ export default class DataModel {
     if (df === null || df.shape[0] === 0) {
       return [];
     }
-    const weightColumn = this.weightColumn;
 
     // Time series
-    let dfTime = df.groupby(['source', 'sourceName', 'year']).col([weightColumn]).sum();
-    dfTime.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
+    let dfTime = df.groupby(['source', 'sourceName', 'year']).col([COLUMN_WEIGHT]).sum();
+    dfTime.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
     dfTime.sortValues('year', { ascending: false, inplace: true });
     this.dfTimeSeries = dfTime;
     return dfd.toJSON(dfTime);
@@ -247,7 +245,7 @@ export default class DataModel {
 
     // Links
     links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
-    links.forEach(d => d['weight'] = d[this.weightColumn]);
+    // Note that the visualization expects the 'weight' property. // links.forEach(d => d['weight'] = d[COLUMN_WEIGHT]);
     links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
 
     // Nodes (link source or target)
