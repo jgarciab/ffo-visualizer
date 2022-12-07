@@ -1,14 +1,13 @@
 import './App.css';
 import React, { useState } from 'react';
+import { action } from 'mobx';
 import { observer, useLocalObservable } from 'mobx-react-lite';
-import AppContext from './AppContext';
-import { getCountryMap, getLocationNames } from './GeoData';
+import { getCountryMap } from './GeoData';
 import DataModel from './DataModel';
 import MultiSelect from './MultiSelect';
 import GeoFlowVis from './GeoFlowVis';
 import CountryTotals from './CountryTotals';
 import TimeSeriesChart from './TimeSeriesChart';
-import { action } from 'mobx';
 
 const App = observer(() => {
   const dataStore = useLocalObservable(() => new DataModel());
@@ -52,7 +51,7 @@ const App = observer(() => {
 //  const totalLinks = data.links?.length;
 
   return (
-    <AppContext.Provider value={null} data-theme="lemonade">
+    <div data-theme="lemonade">
 
       <div className="App flex mb-4">
         <div className="w-1/4 z-30">
@@ -86,9 +85,9 @@ const App = observer(() => {
           {/* Bar chart */}
           <div className="flex flex-row">
             <div className="overflow-x-scroll">
-              {/* <CountryTotals /> */}
+              <CountryTotals data={dataStore.nodesAndLinks}/>
             </div>
-            {/* <TimeSeriesChart /> */}
+            <TimeSeriesChart data={dataStore.nodesAndLinks}/>
           </div>
         </div>
       </div>
@@ -106,7 +105,7 @@ const App = observer(() => {
         </div>
       )}
 
-    </AppContext.Provider>
+    </div>
   );
 });
 

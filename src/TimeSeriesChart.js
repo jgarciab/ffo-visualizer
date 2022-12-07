@@ -1,10 +1,8 @@
 import { useD3 } from './hooks/useD3';
-import React, { useContext } from 'react';
-import AppContext from './AppContext';
+import React from 'react';
 import LineChart from './charts/LineChart';
 
-function TimeSeriesChart() {
-  const { data } = useContext(AppContext);
+function TimeSeriesChart({data}) {
   const timeSeries = data.timeSeries;
 
   const ref = useD3(

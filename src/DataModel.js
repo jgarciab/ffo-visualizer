@@ -12,6 +12,9 @@ export default class DataModel {
   dfLinkToSelf = null;
   dfLinkToOther = null;
   dfFiltered = null;
+  dfLinkTotals = null;
+  dfCountryTotals = null;
+  dfTimeSeries = null;
 
   categories = [];
   minWeight = 0;
@@ -114,7 +117,7 @@ export default class DataModel {
   };
 
   
-  get filteredData() {
+  get filteredDataFrame() {
     let df = this.dfLinkToOther;
     if (df === null) {
       return null;
@@ -131,11 +134,9 @@ export default class DataModel {
     });
     //TODO: result.linkCountAfterCategories = result.links.length;
 
-    rowSelected = rowSelected.map(selected => selected ? 1 : 0); // dfd query on bool is not supported?
-    df = df.addColumn('selected', rowSelected, { inplace: false });
-
     // Filter on the selection
-    let dfFiltered = df.query(df['selected'].eq(1));
+    df = df.addColumn('selected', rowSelected, { inplace: false });
+    let dfFiltered = df.query(df['selected']);
     this.dfFiltered = dfFiltered;
     return dfFiltered;
 
@@ -157,13 +158,12 @@ export default class DataModel {
   /** Converts the dataframe to an object with links and nodes
    */
   get nodesAndLinks() {
-    const df = this.filteredData;
-    if (df === null) {
-      return { links: [], nodes: [], totals: [], timeSeries: [], categories: [] }
+    const links = this.aggregatedByLink;
+    if (links === null ) {
+      return { links: [], nodes: [], totals: [], timeSeries: [] }
     }
 
     // Links
-    const links = dfd.toJSON(df);
     links.forEach((d, i) => !d.id && (d.id = `link-${i}`)); // assign ids to links
     links.forEach(d => d['weight'] = d[this.weightColumn]);
     links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
@@ -172,11 +172,31 @@ export default class DataModel {
     const nodes = new Set();
     links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
 
-    return { links, nodes: [...nodes], totals: [], timeSeries: [], categories: [], minWeight: this.minWeight, maxWeight: this.maxWeight };
+    // Totals and time series
+    const totals = this.aggregatedBySource;
+    const timeSeries = this.timeSeriesData;
+
+    return { links, nodes: [...nodes], totals, timeSeries, minWeight: this.minWeight, maxWeight: this.maxWeight };
   }
 
-  get aggregatedData() {
-    const df = this.dfAllData;
+  /** Aggregate weight by link (source & target), used to display max 1 link between source & target pairs */
+  get aggregatedByLink() {
+    const df = this.filteredDataFrame;
+    if (df === null || df.shape[0] === 0) {
+      return null;
+    }
+    let dfAggregated = df.groupby(['source', 'sourceName', 'target', 'targetName']).col([this.weightColumn]).sum();
+    dfAggregated.rename({ [`${this.weightColumn}_sum`]: 'weight' }, { inplace: true });
+    this.dfLinkTotals = dfAggregated;
+    return dfd.toJSON(dfAggregated);
+  }
+
+  /** Aggregate weight by source country */
+  get aggregatedBySource() {
+    const df = this.filteredDataFrame;
+    if (df === null || df.shape[0] === 0) {
+      return null;
+    }
     const dfLinkToSelf = this.dfLinkToSelf;
     const dfLinkToOther = this.dfLinkToOther;
     const weightColumn = this.weightColumn;
@@ -197,17 +217,22 @@ export default class DataModel {
     }
   
     dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
+    this.dfCountryTotals = dfTotals;
     return dfd.toJSON(dfTotals);
   }
 
-  get timeSeries() {
-    const df = this.dfAllData;
+  get timeSeriesData() {
+    const df = this.filteredDataFrame;
+    if (df === null || df.shape[0] === 0) {
+      return [];
+    }
     const weightColumn = this.weightColumn;
 
     // Time series
     let dfTime = df.groupby(['source', 'sourceName', 'year']).col([weightColumn]).sum();
     dfTime.rename({ [`${weightColumn}_sum`]: 'weight_total' }, { inplace: true });
     dfTime.sortValues('year', { ascending: false, inplace: true });
+    this.dfTimeSeries = dfTime;
     return dfd.toJSON(dfTime);
   }
 

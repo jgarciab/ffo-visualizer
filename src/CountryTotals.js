@@ -1,10 +1,8 @@
 import { useD3 } from './hooks/useD3';
-import React, { useContext } from 'react';
-import AppContext from './AppContext';
+import React from 'react';
 import BarChart from './charts/BarChart';
 
-function CountryTotals() {
-  const { data } = useContext(AppContext);
+function CountryTotals({data}) {
   const totals = data.totals.slice(0, 20); // fix at top 20 values
   const width = totals.length * 28 + 100;
 
