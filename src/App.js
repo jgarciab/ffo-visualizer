@@ -49,47 +49,6 @@ const App = observer(() => {
     }
   };
 
-  // Handle category selection
-  // const changeCategorySelection = (category, selection) => {
-  //   const newSelectedCategories = { ...dataStore.selectedCategories };
-  //   newSelectedCategories[category.name] = selection;
-  //   setSelectedCategories(newSelectedCategories);
-  // }
-
-  // // updateFilteredData
-  // useEffect(() => {
-  //   if (data.df !== undefined) {
-  //     const result = filterData(data, {topN, selectedSources, selectedTargets, selectedCategories});
-  //     setFilteredData(result);
-  //   }
-  // }, [topN, selectedSources, selectedTargets, selectedCategories, data]);
-
-  // updateUsedLocations
-  // useEffect(() => {
-  //   const result = {};
-  //   //const topNSources = data.totals.slice(0, topN).map(el => el.source);
-  //   for (const [key, value] of Object.entries(allLocations)) {
-  //     if (data.links.find(el => el.source === key || el.target === key)) { //&& topNSources.includes(el.source)
-  //       result[key] = value;
-  //     }
-  //   }
-  //   setUsedLocations(result);
-
-  //   // By default, select all sources, targets and categories
-  //   setSelectedSources(Object.keys(result));
-  //   setSelectedTargets(Object.keys(result));
-  //   setSelectedCategories(data.categories.reduce((selectionObj, category) => {
-  //     selectionObj[category.name] = category.values;
-  //     return selectionObj;
-  //   }, {}));
-  // }, [setUsedLocations, data, allLocations]) //topN
-
-  // // These variables will be available through the AppContext
-  // const globalData = {
-  //   //data, setData,
-  //   filteredData, setFilteredData
-  // };
-
 //  const totalLinks = data.links?.length;
 
   return (

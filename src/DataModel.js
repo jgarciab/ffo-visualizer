@@ -91,6 +91,9 @@ export default class DataModel {
   
     // Update model properties (needs runInAction because async)
     runInAction(() => {
+      this.dfAllData = df;
+      this.dfLinkToSelf = dfLinkToSelf;
+      this.dfLinkToOther = dfLinkToOther;
       this.categories = categories;
 
       // Min/max weights
@@ -99,9 +102,14 @@ export default class DataModel {
       console.log(this.minWeight, this.maxWeight);
       //console.log(dfLinkToOther.query(dfLinkToOther[this.weightColumn].lt(1000)));
 
-      this.dfAllData = df;
-      this.dfLinkToSelf = dfLinkToSelf;
-      this.dfLinkToOther = dfLinkToOther;
+      // Default selection
+      const usedLocations = this.usedLocations;
+      this.selectedSources = Object.keys(usedLocations);
+      this.selectedTargets = Object.keys(usedLocations);
+      this.selectedCategories = categories.reduce((selectionObj, category) => {
+        selectionObj[category.name] = category.values;
+        return selectionObj;
+      }, {});
     });
   };
 
@@ -150,7 +158,6 @@ export default class DataModel {
    */
   get nodesAndLinks() {
     const df = this.filteredData;
-    console.log(df);
     if (df === null) {
       return { links: [], nodes: [], totals: [], timeSeries: [], categories: [] }
     }
