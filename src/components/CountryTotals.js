@@ -17,7 +17,7 @@ function CountryTotals({data}) {
         x: d => d.sourceName,
         y: d => d.weight_total,
         width: width,
-        marginLeft: 40,
+        marginLeft: 60,
         color: 'steelblue',
         yFormatFunc: humanFormatNumber
       });
@@ -29,7 +29,7 @@ function CountryTotals({data}) {
       ref={ref}
       style={{
         width: width,
-        height: "420"
+        height: 460
       }}
     >
     </svg>
