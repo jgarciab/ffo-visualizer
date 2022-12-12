@@ -14,10 +14,10 @@ const SVGMenu = ({refSVG}) => {
   const downloadAsSVG = () => {
     let svgSource = refSVG.current.outerHTML.toString();
     // Add name spaces and xml declaration
-    if (!svgSource.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+    if (!svgSource.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)) {
       svgSource = svgSource.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
     }
-    if (!svgSource.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)) {
+    if (!svgSource.match(/^<svg[^>]+"http:\/\/www\.w3\.org\/1999\/xlink"/)) {
       svgSource = svgSource.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
     }
     svgSource = '<?xml version="1.0" standalone="no"?>\r\n' + svgSource;
@@ -70,8 +70,8 @@ const SVGMenu = ({refSVG}) => {
       </svg>
       </label>
       <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-        <li><a onClick={downloadAsPNG}>Download as PNG</a></li>
-        <li><a onClick={downloadAsSVG}>Download as SVG</a></li>
+        <li><button onClick={downloadAsPNG}>Download as PNG</button></li>
+        <li><button onClick={downloadAsSVG}>Download as SVG</button></li>
       </ul>
     </div>
   </Fragment>);
