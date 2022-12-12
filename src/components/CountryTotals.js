@@ -2,12 +2,13 @@ import { useD3 } from './useD3';
 import React from 'react';
 import BarChart from './charts/BarChart';
 import { humanFormatNumber } from './util';
+import SVGMenu from './SVGMenu';
 
 function CountryTotals({data}) {
   const totals = data.totals.slice(0, 20); // fix at top 20 values
   const width = totals.length * 28 + 100;
 
-  const ref = useD3(
+  const refSVG = useD3(
     (svg) => {
 
       // Clean up
@@ -25,14 +26,18 @@ function CountryTotals({data}) {
   [data]);
 
   return (
-    <svg
-      ref={ref}
+    <div style={{position: 'relative'}}>
+      <svg
+      ref={refSVG}
       style={{
         width: width,
-        height: 460
+        height: 460,
+        paddingRight: 38
       }}
-    >
-    </svg>
+      >
+      </svg>
+      <SVGMenu refSVG={refSVG}/>
+    </div>
   );
 }
 

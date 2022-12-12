@@ -1,9 +1,10 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useD3 } from './useD3';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
 import { humanFormatNumber } from './util';
+import SVGMenu from './SVGMenu';
 
 function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
   const [tooltipData, setTooltipData] = useState(null);
@@ -15,7 +16,7 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
       left: event.clientX + 16});
   }
 
-  const ref = useD3(
+  const refSVG = useD3(
     (svg) => {
       console.log("RENDERING", filteredData);
       const projection = d3_geo.geoAitoff();
@@ -48,9 +49,9 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
   [filteredData]);
 
   return (
-    <Fragment>
+    <div style={{position: 'relative'}}>
       <svg
-        ref={ref}
+        ref={refSVG}
         style={{
           width: "100%",
           height: "100%",
@@ -66,7 +67,8 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
         Target: {tooltipData && tooltipData.targetName}<br />
         Weight: {tooltipData && humanFormatNumber(tooltipData.weight)}
       </div>
-    </Fragment>
+      <SVGMenu refSVG={refSVG} />
+    </div>
   );
 }
 

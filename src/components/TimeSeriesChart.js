@@ -2,11 +2,12 @@ import { useD3 } from './useD3';
 import React from 'react';
 import LineChart from './charts/LineChart';
 import { humanFormatNumber } from './util';
+import SVGMenu from './SVGMenu';
 
 function TimeSeriesChart({data}) {
   const timeSeries = data.timeSeries;
 
-  const ref = useD3(
+  const refSVG = useD3(
     (svg) => {
 
       // Clean up
@@ -25,14 +26,17 @@ function TimeSeriesChart({data}) {
   [data]);
 
   return (
-    <svg
-      ref={ref}
-      style={{
-        width: 520,
-        height: 460
-      }}
-    >
-    </svg>
+    <div style={{position: 'relative'}}>
+      <svg
+        ref={refSVG}
+        style={{
+          width: 520,
+          height: 460
+        }}
+      >
+      </svg>
+      <SVGMenu refSVG={refSVG} />
+    </div>
   );
 }
 
