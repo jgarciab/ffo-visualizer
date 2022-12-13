@@ -49,16 +49,19 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
   [filteredData]);
 
   return (
-    <div style={{position: 'relative'}}>
-      <svg
-        ref={refSVG}
-        style={{
-          width: "100%",
-          height: "100%",
-        }}
-        viewBox={[160, 0, 800, 420]}>
-        <g className="map" />
-      </svg>
+    <div>
+      <div style={{position: 'relative'}}>
+        <svg id="svg"
+          ref={refSVG}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
+          viewBox={[160, 0, 800, 420]}>
+          <g className="map" />
+        </svg>
+        <SVGMenu refSVG={refSVG} />
+      </div>
       <div className="tooltip" style={{
           top: tooltipData ? `${tooltipData.top}px` : 0,
           left: tooltipData ? `${tooltipData.left}px` : 0,
@@ -67,7 +70,6 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
         Target: {tooltipData && tooltipData.targetName}<br />
         Weight: {tooltipData && humanFormatNumber(tooltipData.weight)}
       </div>
-      <SVGMenu refSVG={refSVG} />
     </div>
   );
 }

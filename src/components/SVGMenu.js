@@ -36,16 +36,23 @@ const SVGMenu = ({refSVG}) => {
   const downloadAsPNG = () => {
     const svg = refSVG.current;
     const canvas = document.createElement("canvas");
+
+    // Double the resolution for smoothness
     canvas.width = 2 * svg.clientWidth;
     canvas.height = 2 * svg.clientHeight;
-    
+
+    // Slightly hacky method to determine if we should scale the svg (2x)
+    // (which is the case when width/height is in pixels)
+    // OR whether the svg will scale itself when it is drawn (width/height in %)
+    const scaleFactor = svg.style["width"].endsWith("%") ? 1 : 2;
+
     // SVG to data url in img element
     const xml = new XMLSerializer().serializeToString(svg);
     loadImage(`data:image/svg+xml;base64,${btoa(xml)}`)
       .then(img => {
         // Draw the image onto canvas
         const context = canvas.getContext('2d');
-        context.scale(2, 2);          // double the resolution for smoothness
+        context.scale(scaleFactor, scaleFactor);
         context.fillStyle = 'white';  // fill, or bg would be transparent
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.drawImage(img, 0, 0);
@@ -60,7 +67,7 @@ const SVGMenu = ({refSVG}) => {
   }
 
   return (<Fragment>
-    <div className="dropdown dropdown-end" style={{position: 'absolute', top: 0, right: 0}}>
+    <div className="dropdown dropdown-end" style={{position: 'absolute', top: 8, right: 8}}>
       <label tabIndex={0} className="btn btn-circle btn-outline btn-sm text-sm opacity-20 hover:opacity-100">
       <svg style={{width: 12, height: 12}} viewBox="0 0 16 16" fill="currentColor" stroke="none" 
           stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
