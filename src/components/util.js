@@ -7,4 +7,14 @@ const humanFormatNumber = number => {
   return e < s.length ? (number / Math.pow(1000, e)).toFixed(1) + s[e] : number.toFixed(0);
 }
 
-export { humanFormatNumber }
+const FlowMode = {
+  Inflow: 'Inflow',
+  Outflow: 'Outflow'
+};
+
+const SourceTargetOperator = {
+  And: 'And',
+  Or: 'Or'
+}
+
+export { humanFormatNumber, FlowMode, SourceTargetOperator }

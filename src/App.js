@@ -8,6 +8,7 @@ import MultiSelect from './components/MultiSelect';
 import GeoFlowVis from './components/GeoFlowVis';
 import CountryTotals from './components/CountryTotals';
 import TimeSeriesChart from './components/TimeSeriesChart';
+import { FlowMode, SourceTargetOperator } from './components/util';
 
 const App = observer(() => {
   const dataStore = useLocalObservable(() => new DataStore());
@@ -53,32 +54,63 @@ const App = observer(() => {
         <div className="w-1/4 z-30">
 
           {/* Side bar */}
-          <div className="border border-base-300 bg-base-100 rounded-box p-4 content text-left">
+
+          {/* File selection */}
+          <div className="border border-base-300 bg-base-100 rounded-box m-2 p-4 content text-left">
             <input type="file" id="fileInput" accept=".csv" onChange={onFileChanged} /><br />
             or load a demo: <a href="#!"><button onClick={() => loadDemoData("demo_ffo.csv")}>fossil fuel owners</button></a> (<a href="https://www.tandfonline.com/doi/full/10.1080/09692290.2019.1665084" target="_blank" rel="noreferrer">info</a>)<br />
             demo 2 (time series): <a href="#!"><button onClick={() => loadDemoData("demo_ffo2.csv")}>fossil fuel owners</button></a><br />
             Row count: {dataStore.entryCount}
           </div>
-          <MultiSelect label="Sources" options={usedLocations} selection={dataStore.selectedSources} onChanged={action(selection => dataStore.selectedSources = selection)} />
-          <MultiSelect label="Targets" options={usedLocations} selection={dataStore.selectedTargets} onChanged={action(selection => dataStore.selectedTargets = selection)} />
-          { dataStore.categories.map(category => (
-            <MultiSelect key={category.name} label={category.name} options={category.values} selection={dataStore.selectedCategories[category.name] || []} onChanged={action(selection => dataStore.selectedCategories[category.name] = selection)} />
-          ))}
-          <div className="border border-base-300 bg-base-100 rounded-box p-4">
-            <span>Top {dataStore.topN}/{dataStore.linkCountAfterProcessing} connections</span>
-            <input type="range" className="range" min="1" max={Math.min(1000, dataStore.linkCountAfterProcessing)} step="1" value={dataStore.topN} onChange={action(e => dataStore.topN = e.target.value)}/>
+
+          {/* Source & target filters */}
+          <div className="border border-base-300 rounded-box m-2">
+            <MultiSelect label="Sources" options={usedLocations} selection={dataStore.selectedSources} onChanged={action(selection => dataStore.selectedSources = selection)} />
+            <div className="form-control">
+              <select className="select select-bordered w-full max-w-xs text-center" value={dataStore.sourceTargetOperator}
+                  onChange={action(e => dataStore.sourceTargetOperator = e.target.value)}>
+                <option value={SourceTargetOperator.And}>Combine: AND</option>
+                <option value={SourceTargetOperator.Or}>Combine: OR</option>
+              </select>
+            </div>
+            <MultiSelect label="Targets" options={usedLocations} selection={dataStore.selectedTargets} onChanged={action(selection => dataStore.selectedTargets = selection)} />
+          </div>
+
+          {/* Category filters */}
+          <div className="border border-base-300 rounded-box m-2">
+            { dataStore.categories.map(category => (
+              <MultiSelect key={category.name} label={category.name} options={category.values} selection={dataStore.selectedCategories[category.name] || []} onChanged={action(selection => dataStore.selectedCategories[category.name] = selection)} />
+            ))}
           </div>
         </div>
         
         {/* Main content */}
         <div className="w-3/4 z-0">
 
-          {/* Map visualization */}
-          <div className="">
-            <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks} locationMapping={locationMapping} />
+          {/* Top controls */}
+          <div className="flex">
+
+            {/* In / outflow */}
+            <select className="select select-bordered w-full max-w-xs m-2 text-lg" value={dataStore.flowMode}
+                onChange={action(e => dataStore.flowMode = e.target.value)}>
+              <option value={FlowMode.Outflow}>Visualize outflow</option>
+              <option value={FlowMode.Inflow}>Visualize inflow</option>
+            </select>
+
+            {/* Top N */}
+            <div className="border border-base-300 bg-base-100 rounded-box m-2 p-3 w-1/2 flex">
+              <span className="mr-3" style={{whiteSpace: 'nowrap'}}>Top {dataStore.topN}/{dataStore.linkCountAfterProcessing}</span>
+              <input type="range" className="range" min="1" max={Math.min(1000, dataStore.linkCountAfterProcessing)} step="1" value={dataStore.topN} onChange={action(e => dataStore.topN = e.target.value)}/>
+            </div>
           </div>
 
-          {/* Bar chart */}
+          {/* Map visualization */}
+          <div className="">
+            <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks}
+              locationMapping={locationMapping} flowMode={dataStore.flowMode} />
+          </div>
+
+          {/* Totals & time series charts */}
           <div className="flex flex-row">
             <div className="overflow-x-scroll">
               <CountryTotals data={dataStore.nodesAndLinks}/>

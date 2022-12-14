@@ -1,5 +1,6 @@
 import * as dfd from 'danfojs';
 import { makeAutoObservable, runInAction } from 'mobx';
+import { FlowMode, SourceTargetOperator } from './components/util';
 import { getLocationNames } from './GeoData';
 
 const COLUMN_SOURCE = 'source';
@@ -25,9 +26,11 @@ export default class DataStore {
   minWeight = 0;
   maxWeight = 0;
 
+  sourceTargetOperator = SourceTargetOperator.And;
   selectedSources = [];
   selectedTargets = [];
   selectedCategories = {};
+  flowMode = FlowMode.Outflow;
   topN = 20;
 
 
@@ -135,26 +138,23 @@ export default class DataStore {
     return this.dfAllData === null ? 0 : this.dfAllData.shape[0];
   }
 
-  get linkCountAfterProcessing() {
-    return this.dfLinkTotals === null ? 0 : this.dfLinkTotals.shape[0];
-  }
-
   get filteredDataFrame() {
     let df = this.dfLinkToOther;
     if (df === null) {
       return null;
     }
 
+    // Filter on source and/or target
     const sourceSelected = df['source'].map(source => this.selectedSources.includes(source));
     const targetSelected = df['target'].map(target => this.selectedTargets.includes(target));
-    let rowSelected = sourceSelected.and(targetSelected);
+    let rowSelected = this.sourceTargetOperator === SourceTargetOperator.And ?
+      sourceSelected.and(targetSelected) : sourceSelected.or(targetSelected);
 
     // Filter for categories
     Object.keys(this.selectedCategories).forEach(key => {
       const categorySelected = df[key].map(value => this.selectedCategories[key].includes(value.toString()));
       rowSelected = rowSelected.and(categorySelected);
     });
-    //TODO: result.linkCountAfterCategories = result.links.length;
 
     // Filter on the selection
     df = df.addColumn('selected', rowSelected, { inplace: false });
@@ -192,31 +192,37 @@ export default class DataStore {
     return links.slice(0, this.topN);
   }
 
-  /** Aggregate weight by source country */
-  get aggregatedBySource() {
+  get linkCountAfterProcessing() {
+    return this.dfLinkTotals === null ? 0 : this.dfLinkTotals.shape[0];
+  }
+
+  /** Aggregate weight by node (source or target country) */
+  get aggregatedByNode() {
     const df = this.filteredDataFrame;
     if (df === null || df.shape[0] === 0) {
       return null;
     }
     const dfLinkToSelf = this.dfLinkToSelf;
     const dfLinkToOther = this.dfLinkToOther;
+    const groupByColumns = this.flowMode === FlowMode.Outflow ? ['source', 'sourceName'] : ['target', 'targetName'];
 
     // Calculate country totals
-    let dfTotals = df.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+    let dfTotals = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
     dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
   
     if (dfLinkToSelf.shape[0] > 0) {
-      const dfTotalsSelf = dfLinkToSelf.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+      const dfTotalsSelf = dfLinkToSelf.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
       dfTotalsSelf.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_self' }, { inplace: true });
-      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: ['source', 'sourceName'], how: 'outer' });
+      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: groupByColumns, how: 'outer' });
     }
     if (dfLinkToOther.shape[0] > 0) {
-      const dfTotalsOther = dfLinkToOther.groupby(['source', 'sourceName']).col([COLUMN_WEIGHT]).sum();
+      const dfTotalsOther = dfLinkToOther.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
       dfTotalsOther.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_other' }, { inplace: true });
-      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: ['source', 'sourceName'], how: 'outer' });
+      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: groupByColumns, how: 'outer' });
     }
   
     dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
+    dfTotals.rename({ [groupByColumns[0]]: 'node', [groupByColumns[1]]: 'nodeName'}, { inplace: true });
     this.dfCountryTotals = dfTotals;
     return dfd.toJSON(dfTotals);
   }
@@ -226,18 +232,21 @@ export default class DataStore {
     if (df === null || df.shape[0] === 0) {
       return [];
     }
+    const groupByColumns = this.flowMode === FlowMode.Outflow ? ['source', 'sourceName', 'year'] :
+                                                                ['target', 'targetName', 'year'];
 
     // Time series
-    let dfTime = df.groupby(['source', 'sourceName', 'year']).col([COLUMN_WEIGHT]).sum();
+    let dfTime = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
     dfTime.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
     dfTime.sortValues('year', { ascending: false, inplace: true });
+    dfTime.rename({ [groupByColumns[0]]: 'node', [groupByColumns[1]]: 'nodeName'}, { inplace: true });
     this.dfTimeSeries = dfTime;
     return dfd.toJSON(dfTime);
   }
 
   /** Wraps the filtered and aggregated data in an object to be used by the visualization components.
    */
-   get nodesAndLinks() {
+  get nodesAndLinks() {
     const links = this.aggregatedByLink;
     if (links === null ) {
       return { links: [], nodes: [], totals: [], timeSeries: [] }
@@ -253,7 +262,7 @@ export default class DataStore {
     links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
 
     // Totals and time series
-    const totals = this.aggregatedBySource;
+    const totals = this.aggregatedByNode;
     const timeSeries = this.timeSeriesData;
 
     return { links, nodes: [...nodes], totals, timeSeries, minWeight: this.minWeight, maxWeight: this.maxWeight };

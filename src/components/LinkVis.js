@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { FlowMode } from "./util";
 
 const linkColor = (links) => {
   let linkTypes = [...new Set(links.map((d) => d.type))];
@@ -91,11 +92,12 @@ const linkArc = (d, s, t) => {
 };
 
 
-const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
+const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode) => {
   const logScale = d3.scaleSymlog().domain([data.minWeight, data.maxWeight]).range([1.0, 4.0]);
   const links = data.links;
   const routes = avoidLinkOverlaps(links);
   const strokeColor = linkColor(links);
+  const focusColumn = flowMode === FlowMode.Outflow ? 'source': 'target';
 
   const link = svg
     .append("g")
@@ -125,42 +127,6 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .attr("markerUnits", "userSpaceOnUse")
     .append("path")
     .attr("d", "M0,-5L10,0L0,5")
-
-  // defs
-  //   .append("marker")
-  //   .attr("id", (d) => `marker-shadow-${d.id}`)
-  //   .attr("class", "marker")
-  //   .attr("orient", "auto")
-  //   .attr("viewBox", "0 -5 10 10")
-  //   .attr("refX", 4)
-  //   .attr("refY", 0)
-  //   .attr("markerWidth", 10)
-  //   .attr("markerHeight", 10)
-  //   .attr("markerUnits", "userSpaceOnUse")
-  //   .attr("opacity", 1.0)
-  //   .append("path")
-  //   .attr("d", "M0,-5L10,0L0,5")
-  //   .attr("fill", "#000");
-
-  // link outline
-  //   .selectAll(".link-path-shadow")
-  //   .data((d) => [d])
-  //   .join("path")
-  //   .attr("class", "link-path-shadow")
-  //   .attr("fill", "none")
-  //   .attr("stroke-width", (d) => logScale(d.weight) + 1)
-  //   .attr("stroke", "#000")
-  //   .attr("opacity", 0.7)
-  //   .attr("marker-end", (d) =>
-  //     d.directed === "yes" ? `url(#marker-shadow-${d.id})` : undefined
-  //   )
-  //   .attr("d", (d, i) =>
-  //     linkArc(
-  //       routes[i],
-  //       projection(locMap[d.source]),
-  //       projection(locMap[d.target])
-  //     )
-  //   );
 
   link
     .selectAll(".link-path")
@@ -196,10 +162,6 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
       .attr("fill", strokeColor);
   });
 
-  // link.append("title")
-  //   .datum(d => d)
-  //   .text(d => JSON.stringify(d));
-
   const nodes = data.nodes;
   const node = svg
     .append("g")
@@ -224,11 +186,11 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler) => {
     .on("mouseover", (event, data) => {
       // Highlight all links connected to this node
       const selection = d3.selectAll(".link"); // select the group element (not only the path)
-      selection.filter(d => d.source === data)
+      selection.filter(d => d[focusColumn] === data)
         .attr("stroke", "red")
         .attr("fill", "red")
         .attr("opacity", 1.0);
-      selection.filter(d => d.source !== data)
+      selection.filter(d => d[focusColumn] !== data)
         .attr("stroke", "grey")
         .attr("fill", "grey")
         .attr("opacity", 0.1);

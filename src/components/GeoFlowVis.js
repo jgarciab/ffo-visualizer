@@ -6,7 +6,7 @@ import { visualizeLinks } from './LinkVis';
 import { humanFormatNumber } from './util';
 import SVGMenu from './SVGMenu';
 
-function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
+function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
   const [tooltipData, setTooltipData] = useState(null);
 
   const showTooltip = (event, data) => {
@@ -43,10 +43,10 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping }) {
 
       // Render links
       if (filteredData.links.length > 0) {
-        visualizeLinks(filteredData, projection, svg, locationMapping, showTooltip);
+        visualizeLinks(filteredData, projection, svg, locationMapping, showTooltip, flowMode);
       }
     },
-  [filteredData]);
+  [filteredData, flowMode]);
 
   return (
     <div>

@@ -23,3 +23,7 @@ a:link, a:visited {
 .tooltip:hover {
   visibility: visible;
 }
+
+.select:focus {
+  outline: 0px; /* prevent focus border on select components */
+}
