@@ -14,6 +14,7 @@ export default class DataStore {
 
   allLocations = getLocationNames();
 
+  // Danfo dataframes at various levels of filtering
   dfAllData = null;
   dfLinkToSelf = null;
   dfLinkToOther = null;
@@ -31,11 +32,26 @@ export default class DataStore {
   selectedTargets = [];
   selectedCategories = {};
   flowMode = FlowMode.Outflow;
-  topN = 20;
+  _topN = 20;
+  stickTopNToMax = true;
 
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  set topN(value) {
+    this.stickTopNToMax = value === this.linkCountAfterProcessing;
+    this._topN = value;
+  }
+
+  get topN() {
+    if (this.stickTopNToMax) {
+      return Math.max(this._topN, this.linkCountAfterProcessing);
+    }
+    else {
+      return Math.min(this._topN, this.linkCountAfterProcessing);
+    }
   }
 
   /**
@@ -175,15 +191,6 @@ export default class DataStore {
     // Sort
     dfAggregated = dfAggregated.sortValues(COLUMN_WEIGHT, { ascending: false });
     dfAggregated.resetIndex({ inplace: true });
-
-    // Check if topN has proper value
-    const linkCountAfterProcessing = dfAggregated.shape[0];
-    if (this.topN === 0 && linkCountAfterProcessing > 0) {
-      this.topN = Math.min(20, linkCountAfterProcessing)
-    }
-    if (this.topN > linkCountAfterProcessing) {
-      this.topN = linkCountAfterProcessing;
-    }
 
     runInAction(() => {
       this.dfLinkTotals = dfAggregated;

@@ -70,7 +70,7 @@ const SVGMenu = ({refSVG}) => {
     <div className="dropdown dropdown-end" style={{position: 'absolute', top: 8, right: 8}}>
       <label tabIndex={0} className="btn btn-circle btn-outline btn-sm text-sm opacity-20 hover:opacity-100">
       <svg style={{width: 12, height: 12}} viewBox="0 0 16 16" fill="currentColor" stroke="none" 
-          stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+          strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
         <circle r="2" cy="8" cx="2"></circle>
         <circle r="2" cy="8" cx="8"></circle>
         <circle r="2" cy="8" cx="14"></circle>

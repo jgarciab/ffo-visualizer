@@ -66,8 +66,8 @@ const App = observer(() => {
           {/* Source & target filters */}
           <div className="border border-base-300 rounded-box m-2">
             <MultiSelect label="Sources" options={usedLocations} selection={dataStore.selectedSources} onChanged={action(selection => dataStore.selectedSources = selection)} />
-            <div className="form-control">
-              <select className="select select-bordered w-full max-w-xs text-center" value={dataStore.sourceTargetOperator}
+            <div className="">
+              <select className="select select-bordered w-full text-center" value={dataStore.sourceTargetOperator}
                   onChange={action(e => dataStore.sourceTargetOperator = e.target.value)}>
                 <option value={SourceTargetOperator.And}>Combine: AND</option>
                 <option value={SourceTargetOperator.Or}>Combine: OR</option>
