@@ -2,14 +2,17 @@
 
 const humanFormatNumber = number => {
   if (number === 0) return '0';
-  var s = ['', ' th', ' mln', ' bln'];
-  var e = Math.floor(Math.log(number) / Math.log(1000));
-  return e < s.length ? (number / Math.pow(1000, e)).toFixed(1) + s[e] : number.toFixed(0);
+  const s = ['', ' th', ' mln', ' bln'];
+  const e = Math.floor(Math.log(number) / Math.log(1000));
+  const value = (number / Math.pow(1000, e)).toFixed(1);
+  const exponent = e < s.length ? s[e] : `E${3*e}`
+  return `${value}${exponent}`;
 }
 
 const FlowMode = {
   Inflow: 'Inflow',
-  Outflow: 'Outflow'
+  Outflow: 'Outflow',
+  Self: 'Self'
 };
 
 const SourceTargetOperator = {

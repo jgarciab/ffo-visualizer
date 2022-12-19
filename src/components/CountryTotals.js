@@ -5,8 +5,8 @@ import { humanFormatNumber } from './util';
 import SVGMenu from './SVGMenu';
 
 function CountryTotals({data}) {
-  const totals = data.totals.slice(0, 13); // fix at top 12 values
-  const width = totals.length * 28 + 100;
+  const totals = data.totals.slice(0, 12); // fix at top 12 values
+  const width = totals.length * 28 + 160;
 
   const refSVG = useD3(
     (svg) => {
@@ -15,10 +15,11 @@ function CountryTotals({data}) {
       svg.selectAll("*").remove();
 
       BarChart(svg, totals, {
-        x: d => d.nodeName,
-        y: d => d.weight_total,
+        x: d => d.countryName,
+        y: d => d.weight,
         width: width,
         marginLeft: 60,
+        marginRight: 60,
         color: 'steelblue',
         yFormatFunc: humanFormatNumber
       });

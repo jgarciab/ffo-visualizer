@@ -95,6 +95,7 @@ const App = observer(() => {
                 onChange={action(e => dataStore.flowMode = e.target.value)}>
               <option value={FlowMode.Outflow}>Visualize outflow</option>
               <option value={FlowMode.Inflow}>Visualize inflow</option>
+              <option value={FlowMode.Self}>Visualize flow to self</option>
             </select>
 
             {/* Top N */}

@@ -93,8 +93,10 @@ const linkArc = (d, s, t) => {
 
 
 const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode) => {
-  const logScale = d3.scaleSymlog().domain([data.minWeight, data.maxWeight]).range([1.0, 4.0]);
+  const logScale = d3.scaleSymlog().domain([data.minLinkWeight, data.maxLinkWeight]).range([1.0, 4.0]);
   const links = data.links;
+  const nodes = data.nodes; // Array of country codes
+  const totals = data.totals;
   const routes = avoidLinkOverlaps(links);
   const strokeColor = linkColor(links);
   const focusColumn = flowMode === FlowMode.Outflow ? 'source': 'target';
@@ -105,7 +107,7 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode)
     .data(links)
     .join("g")
     .attr("class", "link")
-    .attr("opacity", 0.5)
+    .attr("opacity", 0.7)
     .attr("stroke", strokeColor)
     .attr("fill", strokeColor); // for the marker-end
 
@@ -162,7 +164,6 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode)
       .attr("fill", strokeColor);
   });
 
-  const nodes = data.nodes;
   const node = svg
     .append("g")
     .selectAll(".node")
@@ -183,19 +184,21 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode)
     .attr("r", 3)
     .attr("stroke-width", 1)
     .attr("fill", "white")
-    .on("mouseover", (event, data) => {
+    .on("mouseover", (event, countryCode) => {
+      toolTipHandler(event, totals.find(el => el.countryCode === countryCode));
       // Highlight all links connected to this node
       const selection = d3.selectAll(".link"); // select the group element (not only the path)
-      selection.filter(d => d[focusColumn] === data)
+      selection.filter(d => d[focusColumn] === countryCode)
         .attr("stroke", "red")
         .attr("fill", "red")
         .attr("opacity", 1.0);
-      selection.filter(d => d[focusColumn] !== data)
+      selection.filter(d => d[focusColumn] !== countryCode)
         .attr("stroke", "grey")
         .attr("fill", "grey")
         .attr("opacity", 0.1);
     })
-    .on("mouseout", (event, data) => {
+    .on("mouseout", (event, countryCode) => {
+      toolTipHandler(event, totals.find(el => el.countryCode === countryCode));
       d3.selectAll(".link")
         .attr("stroke", strokeColor)
         .attr("fill", strokeColor)

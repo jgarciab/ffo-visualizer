@@ -18,13 +18,19 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
 
   const refSVG = useD3(
     (svg) => {
-      console.log("RENDERING", filteredData);
-      const projection = d3_geo.geoAitoff();
-      const path = d3.geoPath(projection);
+      console.log("RENDERING", filteredData, countryMap);
 
       // Clean up
       svg.selectAll(".link").remove();
       svg.selectAll(".node").remove();
+      svg.select(".map").selectAll(".country").remove();
+
+      const projection = d3_geo.geoAitoff();
+      const path = d3.geoPath(projection);
+
+      var colorScale = d3.scaleSymlog(d3.interpolateBlues)
+        .domain([0, filteredData.minTotalWeight, filteredData.maxTotalWeight])
+        .range(d3.schemeBlues[3]);
 
       // Render base map
       svg
@@ -35,7 +41,11 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
         .append("path")
         .attr("class", "country")
         .attr("d", path)
-        .attr("fill", "#b5b1a7")
+        .attr("fill", function (d) {
+          const total = filteredData.totals.find(t => t.countryCode === d.properties.ISO2);
+          d.weight = total?.weight || 0;
+          return colorScale(d.weight);
+        })
         .attr("stroke", "white")
         .attr("stroke-width", 0.4);
         // .on("mouseover", function() { d3.select(this).style("fill", "#488c48") })
@@ -66,8 +76,8 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
           top: tooltipData ? `${tooltipData.top}px` : 0,
           left: tooltipData ? `${tooltipData.left}px` : 0,
           visibility: tooltipData ? 'visible' : 'hidden'}}>
-        Source: {tooltipData && tooltipData.sourceName}<br />
-        Target: {tooltipData && tooltipData.targetName}<br />
+        Source: {tooltipData && (tooltipData.sourceName || tooltipData.countryName) }<br />
+        Target: {tooltipData && (tooltipData.targetName || tooltipData.countryName) }<br />
         Weight: {tooltipData && humanFormatNumber(tooltipData.weight)}
       </div>
     </div>

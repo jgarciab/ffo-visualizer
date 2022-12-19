@@ -15,8 +15,8 @@ function TimeSeriesChart({data}) {
 
       LineChart(svg, timeSeries, {
         x: d => d.year,
-        y: d => d.weight_total,
-        z: d => d.nodeName,
+        y: d => d.weight,
+        z: d => d.countryName,
         width: 480,
         marginLeft: 60,
         color: 'steelblue',

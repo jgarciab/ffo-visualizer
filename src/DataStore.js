@@ -8,6 +8,8 @@ const COLUMN_TARGET = 'target';
 const COLUMN_WEIGHT = 'weight';
 const FIXED_COLUMNS = [COLUMN_SOURCE, COLUMN_TARGET, COLUMN_WEIGHT];
 
+const MAX_LINK_COUNT = 1000;
+
 /** This class contains the data model and is a mobx Observable.
  */
 export default class DataStore {
@@ -24,9 +26,11 @@ export default class DataStore {
   dfTimeSeries = null;
 
   categories = [];
-  minWeight = 0;
-  maxWeight = 0;
-
+  minLinkWeight = 0;
+  maxLinkWeight = 0;
+  minTotalWeight = 0;
+  maxTotalWeight = 0;
+  
   sourceTargetOperator = SourceTargetOperator.And;
   selectedSources = [];
   selectedTargets = [];
@@ -41,13 +45,13 @@ export default class DataStore {
   }
 
   set topN(value) {
-    this.stickTopNToMax = value === this.linkCountAfterProcessing;
+    this.stickTopNToMax = value === this.linkCountAfterProcessing || value === MAX_LINK_COUNT;
     this._topN = value;
   }
 
   get topN() {
     if (this.stickTopNToMax) {
-      return Math.max(this._topN, this.linkCountAfterProcessing);
+      return Math.min(MAX_LINK_COUNT, Math.max(this._topN, this.linkCountAfterProcessing));
     }
     else {
       return Math.min(this._topN, this.linkCountAfterProcessing);
@@ -117,10 +121,6 @@ export default class DataStore {
       this.dfLinkToOther = dfLinkToOther;
       this.categories = categories;
 
-      // Min/max weights
-      this.minWeight = dfLinkToOther[COLUMN_WEIGHT].min();
-      this.maxWeight = dfLinkToOther[COLUMN_WEIGHT].max();
-
       // Default selection
       const usedLocations = this.usedLocations;
       this.selectedSources = Object.keys(usedLocations);
@@ -134,7 +134,7 @@ export default class DataStore {
 
   /** Returns a "dictionary" object of the sources and targets that are actually used in the loaded dataset,
    *  mapping ISO-2 country codes to country names. */
-   get usedLocations() {
+  get usedLocations() {
     if (this.dfAllData === null) {
       return [];
     }
@@ -155,8 +155,8 @@ export default class DataStore {
   }
 
   get filteredDataFrame() {
-    let df = this.dfLinkToOther;
-    if (df === null) {
+    let df = this.flowMode === FlowMode.Self ? this.dfLinkToSelf : this.dfLinkToOther;
+    if (df === null || df.shape[0] === 0) {
       return null;
     }
 
@@ -172,7 +172,7 @@ export default class DataStore {
       rowSelected = rowSelected.and(categorySelected);
     });
 
-    // Filter on the selection
+    // Apply the selection
     df = df.addColumn('selected', rowSelected, { inplace: false });
     let dfFiltered = df.query(df['selected']);
     this.dfFiltered = dfFiltered;
@@ -192,6 +192,10 @@ export default class DataStore {
     dfAggregated = dfAggregated.sortValues(COLUMN_WEIGHT, { ascending: false });
     dfAggregated.resetIndex({ inplace: true });
 
+    // Min/max weights
+    this.minLinkWeight = dfAggregated[COLUMN_WEIGHT].min();
+    this.maxLinkWeight = dfAggregated[COLUMN_WEIGHT].max();
+
     runInAction(() => {
       this.dfLinkTotals = dfAggregated;
     });
@@ -209,27 +213,18 @@ export default class DataStore {
     if (df === null || df.shape[0] === 0) {
       return null;
     }
-    const dfLinkToSelf = this.dfLinkToSelf;
-    const dfLinkToOther = this.dfLinkToOther;
     const groupByColumns = this.flowMode === FlowMode.Outflow ? ['source', 'sourceName'] : ['target', 'targetName'];
 
     // Calculate country totals
     let dfTotals = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
-    dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
-  
-    if (dfLinkToSelf.shape[0] > 0) {
-      const dfTotalsSelf = dfLinkToSelf.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
-      dfTotalsSelf.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_self' }, { inplace: true });
-      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsSelf, on: groupByColumns, how: 'outer' });
-    }
-    if (dfLinkToOther.shape[0] > 0) {
-      const dfTotalsOther = dfLinkToOther.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
-      dfTotalsOther.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_other' }, { inplace: true });
-      dfTotals = dfd.merge({ left: dfTotals, right: dfTotalsOther, on: groupByColumns, how: 'outer' });
-    }
-  
-    dfTotals.sortValues('weight_total', { ascending: false, inplace: true });
-    dfTotals.rename({ [groupByColumns[0]]: 'node', [groupByColumns[1]]: 'nodeName'}, { inplace: true });
+    dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: COLUMN_WEIGHT }, { inplace: true });
+    dfTotals.sortValues(COLUMN_WEIGHT, { ascending: false, inplace: true });
+    dfTotals.rename({ [groupByColumns[0]]: 'countryCode', [groupByColumns[1]]: 'countryName'}, { inplace: true });
+
+    // Min/max weights
+    this.minTotalWeight = dfTotals[COLUMN_WEIGHT].min();
+    this.maxTotalWeight = dfTotals[COLUMN_WEIGHT].max();
+
     this.dfCountryTotals = dfTotals;
     return dfd.toJSON(dfTotals);
   }
@@ -244,9 +239,9 @@ export default class DataStore {
 
     // Time series
     let dfTime = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
-    dfTime.rename({ [`${COLUMN_WEIGHT}_sum`]: 'weight_total' }, { inplace: true });
+    dfTime.rename({ [`${COLUMN_WEIGHT}_sum`]: COLUMN_WEIGHT }, { inplace: true });
     dfTime.sortValues('year', { ascending: false, inplace: true });
-    dfTime.rename({ [groupByColumns[0]]: 'node', [groupByColumns[1]]: 'nodeName'}, { inplace: true });
+    dfTime.rename({ [groupByColumns[0]]: 'countryCode', [groupByColumns[1]]: 'countryName'}, { inplace: true });
     this.dfTimeSeries = dfTime;
     return dfd.toJSON(dfTime);
   }
@@ -272,7 +267,16 @@ export default class DataStore {
     const totals = this.aggregatedByNode;
     const timeSeries = this.timeSeriesData;
 
-    return { links, nodes: [...nodes], totals, timeSeries, minWeight: this.minWeight, maxWeight: this.maxWeight };
+    return {
+      links,
+      nodes: [...nodes],
+      totals,
+      timeSeries,
+      minLinkWeight: this.minLinkWeight,
+      maxLinkWeight: this.maxLinkWeight,
+      minTotalWeight: this.minTotalWeight,
+      maxTotalWeight: this.maxTotalWeight
+    };
   }
 
 }
