@@ -1,6 +1,9 @@
 import { Fragment } from "react";
 
-
+/**
+ * The context menu for the (d3-rendered) SVGs.
+ * It allows exporting the visualization to SVG and PNG.
+ */
 const SVGMenu = ({refSVG}) => {
 
   const downloadBlob = (blob, filename) => {
@@ -25,6 +28,7 @@ const SVGMenu = ({refSVG}) => {
     downloadBlob(blob, 'chart.svg');
   }
 
+  /** Wrap loading image in promise */
   const loadImage = src => {
     return new Promise(resolve => {
       const img = new Image();
@@ -43,7 +47,7 @@ const SVGMenu = ({refSVG}) => {
 
     // Slightly hacky method to determine if we should scale the svg (2x)
     // (which is the case when width/height is in pixels)
-    // OR whether the svg will scale itself when it is drawn (width/height in %)
+    // OR whether the svg will scale itself when it is drawn (assumes width/height is 100%)
     const scaleFactor = svg.style["width"].endsWith("%") ? 1 : 2;
 
     // SVG to data url in img element
