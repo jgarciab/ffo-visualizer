@@ -114,7 +114,7 @@ const App = observer(() => {
           {/* Totals & time series charts */}
           <div className="flex flex-row">
             <div className="overflow-x-scroll">
-              <CountryTotals data={dataStore.nodesAndLinks}/>
+              <CountryTotals data={dataStore.nodesAndLinks} flowMode={dataStore.flowMode} />
             </div>
             <TimeSeriesChart data={dataStore.nodesAndLinks}/>
           </div>

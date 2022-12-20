@@ -213,19 +213,28 @@ export default class DataStore {
     if (df === null || df.shape[0] === 0) {
       return null;
     }
-    const groupByColumns = this.flowMode === FlowMode.Outflow ? ['source', 'sourceName'] : ['target', 'targetName'];
 
     // Calculate country totals
-    let dfTotals = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
-    dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: COLUMN_WEIGHT }, { inplace: true });
-    dfTotals.sortValues(COLUMN_WEIGHT, { ascending: false, inplace: true });
-    dfTotals.rename({ [groupByColumns[0]]: 'countryCode', [groupByColumns[1]]: 'countryName'}, { inplace: true });
+    const aggregateTotals = (groupByColumns, outputColumn) => {
+      let dfTotals = df.groupby(groupByColumns).col([COLUMN_WEIGHT]).sum();
+      dfTotals.rename({ [`${COLUMN_WEIGHT}_sum`]: outputColumn }, { inplace: true });
+      dfTotals.rename({ [groupByColumns[0]]: 'countryCode', [groupByColumns[1]]: 'countryName'}, { inplace: true });
+      return dfTotals;
+    }
+    const dfTotalsIn = aggregateTotals(['target', 'targetName'], 'weight_in');
+    const dfTotalsOut = aggregateTotals(['source', 'sourceName'], 'weight_out');
+    const dfTotals = dfd.merge({ left: dfTotalsIn, right: dfTotalsOut, on: ['countryCode', 'countryName'], how: 'outer' });
+    dfTotals.fillNa([0.0, 0.0], {columns: ['weight_in', 'weight_out'], inplace: true});
 
-    // Min/max weights
-    this.minTotalWeight = dfTotals[COLUMN_WEIGHT].min();
-    this.maxTotalWeight = dfTotals[COLUMN_WEIGHT].max();
+    runInAction(() => {
+      // Min/max weights (will be used for the color scale)
+      const column = this.flowMode === FlowMode.Outflow ? 'weight_out' : 'weight_in';
+      dfTotals.sortValues(column, { ascending: false, inplace: true });
+      this.minTotalWeight = dfTotals[column].min();
+      this.maxTotalWeight = dfTotals[column].max();
 
-    this.dfCountryTotals = dfTotals;
+      this.dfCountryTotals = dfTotals;
+    });
     return dfd.toJSON(dfTotals);
   }
 
@@ -259,7 +268,7 @@ export default class DataStore {
     // Note that the visualization expects the 'weight' property. // links.forEach(d => d['weight'] = d[COLUMN_WEIGHT]);
     links.forEach((d) => { if (d.source !== d.target) d.directed = "yes"; });
 
-    // Nodes (link source or target)
+    // Nodes (link source or target after top-n filtering, so only for visible links)
     const nodes = new Set();
     links.forEach(link => { nodes.add(link.source); nodes.add(link.target); });
 
@@ -269,7 +278,7 @@ export default class DataStore {
 
     return {
       links,
-      nodes: [...nodes],
+      nodes: [...nodes], // list of country codes used as either source or target
       totals,
       timeSeries,
       minLinkWeight: this.minLinkWeight,

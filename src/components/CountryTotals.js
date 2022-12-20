@@ -1,10 +1,10 @@
 import { useD3 } from './useD3';
 import React from 'react';
 import BarChart from './charts/BarChart';
-import { humanFormatNumber } from './util';
+import { FlowMode, humanFormatNumber } from './util';
 import SVGMenu from './SVGMenu';
 
-function CountryTotals({data}) {
+function CountryTotals({data, flowMode}) {
   const totals = data.totals.slice(0, 12); // fix at top 12 values
   const width = totals.length * 28 + 160;
 
@@ -16,7 +16,7 @@ function CountryTotals({data}) {
 
       BarChart(svg, totals, {
         x: d => d.countryName,
-        y: d => d.weight,
+        y: d => flowMode === FlowMode.Inflow ? d.weight_in : d.weight_out,
         width: width,
         marginLeft: 60,
         marginRight: 60,
@@ -24,7 +24,7 @@ function CountryTotals({data}) {
         yFormatFunc: humanFormatNumber
       });
     },
-  [data]);
+  [data, flowMode]);
 
   return (
     <div style={{position: 'relative'}}>

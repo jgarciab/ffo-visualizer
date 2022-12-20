@@ -3,7 +3,7 @@ import { useD3 } from './useD3';
 import * as d3 from 'd3';
 import * as d3_geo from 'd3-geo-projection';
 import { visualizeLinks } from './LinkVis';
-import { humanFormatNumber } from './util';
+import { FlowMode, humanFormatNumber } from './util';
 import SVGMenu from './SVGMenu';
 
 function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
@@ -28,9 +28,11 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
       const projection = d3_geo.geoAitoff();
       const path = d3.geoPath(projection);
 
-      var colorScale = d3.scaleSymlog(d3.interpolateBlues)
-        .domain([0, filteredData.minTotalWeight, filteredData.maxTotalWeight])
-        .range(d3.schemeBlues[3]);
+      const colorScale = filteredData.minTotalWeight !== undefined ?
+         d3.scaleSymlog(d3.interpolateBlues)
+          .domain([0, filteredData.minTotalWeight, filteredData.maxTotalWeight])
+          .range(d3.schemeBlues[3]) :
+        () => "#ccc";
 
       // Render base map
       svg
@@ -43,7 +45,8 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
         .attr("d", path)
         .attr("fill", function (d) {
           const total = filteredData.totals.find(t => t.countryCode === d.properties.ISO2);
-          d.weight = total?.weight || 0;
+          d.weight = total ? (flowMode === FlowMode.Inflow ? total.weight_in : total.weight_out) : 0;
+          if (isNaN(d.weight)) d.weight = 0;
           return colorScale(d.weight);
         })
         .attr("stroke", "white")
@@ -78,7 +81,10 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode }) {
           visibility: tooltipData ? 'visible' : 'hidden'}}>
         Source: {tooltipData && (tooltipData.sourceName || tooltipData.countryName) }<br />
         Target: {tooltipData && (tooltipData.targetName || tooltipData.countryName) }<br />
-        Weight: {tooltipData && humanFormatNumber(tooltipData.weight)}
+        {tooltipData && !isNaN(tooltipData.weight) && (<span>Weight: {humanFormatNumber(tooltipData.weight)}</span>)}
+        {tooltipData && !isNaN(tooltipData.weight_in) && (<span>Weight IN: {humanFormatNumber(tooltipData.weight_in)}</span>)}
+        <br />
+        {tooltipData && !isNaN(tooltipData.weight_out) && (<span>Weight OUT: {humanFormatNumber(tooltipData.weight_out)}</span>)}
       </div>
     </div>
   );
