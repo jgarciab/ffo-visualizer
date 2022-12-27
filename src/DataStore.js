@@ -288,4 +288,15 @@ export default class DataStore {
     };
   }
 
+  selectAsSource(countryCode) {
+    this.selectedSources = [countryCode];
+    this.selectedTargets = Object.keys(this.usedLocations);
+    this.flowMode = FlowMode.Inflow;
+  }
+
+  selectAsTarget(countryCode) {
+    this.selectedTargets = [countryCode];
+    this.selectedSources = Object.keys(this.usedLocations);
+    this.flowMode = FlowMode.Outflow;
+  }
 }

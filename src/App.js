@@ -108,7 +108,9 @@ const App = observer(() => {
           {/* Map visualization */}
           <div className="">
             <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks}
-              locationMapping={locationMapping} flowMode={dataStore.flowMode} />
+              locationMapping={locationMapping} flowMode={dataStore.flowMode}
+              selectAsSource={dataStore.selectAsSource.bind(dataStore)}
+              selectAsTarget={dataStore.selectAsTarget.bind(dataStore)} />
           </div>
 
           {/* Totals & time series charts */}

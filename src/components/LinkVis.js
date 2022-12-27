@@ -92,7 +92,7 @@ const linkArc = (d, s, t) => {
 };
 
 
-const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode) => {
+const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode, contextMenuHandler) => {
   const logScale = d3.scaleSymlog().domain([data.minLinkWeight, data.maxLinkWeight]).range([1.0, 4.0]);
   const links = data.links;
   const nodes = data.nodes; // Array of country codes
@@ -203,6 +203,9 @@ const visualizeLinks = (data, projection, svg, locMap, toolTipHandler, flowMode)
         .attr("stroke", strokeColor)
         .attr("fill", strokeColor)
         .attr("opacity", 0.5);
+    })
+    .on("click", (event, countryCode) => {
+      contextMenuHandler(event, countryCode);
     });
 
   // node
