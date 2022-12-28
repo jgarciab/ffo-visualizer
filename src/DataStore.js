@@ -192,11 +192,11 @@ export default class DataStore {
     dfAggregated = dfAggregated.sortValues(COLUMN_WEIGHT, { ascending: false });
     dfAggregated.resetIndex({ inplace: true });
 
-    // Min/max weights
-    this.minLinkWeight = dfAggregated[COLUMN_WEIGHT].min();
-    this.maxLinkWeight = dfAggregated[COLUMN_WEIGHT].max();
-
     runInAction(() => {
+      // Min/max weights
+      this.minLinkWeight = dfAggregated[COLUMN_WEIGHT].min();
+      this.maxLinkWeight = dfAggregated[COLUMN_WEIGHT].max();
+  
       this.dfLinkTotals = dfAggregated;
     });
     const links = dfd.toJSON(dfAggregated);
