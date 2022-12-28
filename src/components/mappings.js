@@ -29,6 +29,9 @@ const linkColor = (links) => {
   return d => ["#ff9100"];
 };
 
+const linkOpacity = 0.6;
+const curveFactor = 1.2; // 0=straight, 0.5=big curve, >1=slight curve
+
 const countryColor = (min, max) => {
   return min !== undefined ?
     d3.scaleSymlog(d3.interpolateBlues)
@@ -43,5 +46,7 @@ export {
   SourceTargetOperator,
   projection,
   linkColor,
+  linkOpacity,
+  curveFactor,
   countryColor
 };

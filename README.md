@@ -26,7 +26,7 @@ Use the file selector to select a CSV file that at least has the columns `source
 
 ## Development
 
-In short, the application uses the React as the main framework, Danfo.js for data processing and filtering, and [d3.js](https://d3js.org/) for visualization of the map and charts. Below is a more detailed overview of what can be found where.
+In short, the application uses the React as the main framework, [Danfo.js](https://danfo.jsdata.org/) for data processing and filtering, and [d3.js](https://d3js.org/) for visualization of the map and charts. Below is a more detailed overview of what can be found where.
 
 ### Application
 The main GUI is specified in `App`, which connects all the components to the data that is managed in the `DataStore` class (below).
@@ -46,10 +46,17 @@ Loading and filtering the data happens in several steps and only the required st
 * In addition there are some properties for row / link counts, used locations and categories.
 
 ### Maps, countries, projections
+
 The map and country data is loaded in the `GeoData` module. It is currently 'hard coded', i.e. cannot be specified by the user.
 
 The world map is a topojson file: [world_countries_neocarto.json](src/data/world_countries_neocarto.json). The geometries are used to display the map and they are linked to the visualization by their ISO-2 country codes. The other properties are ignored.
 
 The capital of each country is used as its location (the node the arrows point to/from). Country capital positions are linked to the user data by their ISO-2 country codes. The capital data is in [country-capitals.json](src/data/country-capitals.json). This is also where the country names (labels) are from.
 
-The current map projection is [geoAitoff](https://github.com/d3/d3-geo-projection#geoAitoff) and is set in the `GeoFlowVis` component.
+The current map projection is [geoAitoff](https://github.com/d3/d3-geo-projection#geoAitoff) and is set in the `components/mappings` module.
+
+### Styling and colors of visualization
+
+Some semi-constant data, such as color maps, projections and number formatting functions are defined in the `components/mappings` module.
+
+The visualization of the map and its links are defined in `components/LinkVis`. Properties that are not defined in the `mappings` module can be customized there.

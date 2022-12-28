@@ -23,7 +23,6 @@ function GeoFlowVis({ filteredData, countryMap, locationMapping, flowMode,
 
   const refSVG = useD3(
     (svg) => {
-      console.log("RENDERING", filteredData, countryMap);
       visualizeGeoFlow(svg, filteredData, countryMap, locationMapping, flowMode, showTooltip, showContextMenu);
     },
   [filteredData, flowMode]);

@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { countryColor, FlowMode, linkColor, projection } from "./mappings";
+import { countryColor, curveFactor, FlowMode, linkColor, linkOpacity, projection } from "./mappings";
 
 
 const visualizeGeoFlow = (svg, data, countryMap, locMap, flowMode, toolTipHandler, contextMenuHandler) => {
@@ -45,7 +45,6 @@ const visualizeMap = (svg, data, countryMap, flowMode) => {
 const visualizeLinks = (svg, data, locMap, toolTipHandler) => {
   const logScale = d3.scaleSymlog().domain([data.minLinkWeight, data.maxLinkWeight]).range([1.0, 4.0]);
   const links = data.links;
-  const routes = avoidLinkOverlaps(links);
   const strokeColor = linkColor(links);
   const proj = projection();
 
@@ -91,11 +90,7 @@ const visualizeLinks = (svg, data, locMap, toolTipHandler) => {
       d.directed === "yes" ? `url(#marker-${d.id})` : undefined
     )
     .attr("d", (d, i) =>
-      linkArc(
-        routes[i],
-        proj(locMap[d.source]),
-        proj(locMap[d.target])
-      )
+      linkArc(proj(locMap[d.source]), proj(locMap[d.target]))
     );
 
   // Link event handlers
@@ -109,7 +104,7 @@ const visualizeLinks = (svg, data, locMap, toolTipHandler) => {
   link.on("mouseout", (event, data) => {
     toolTipHandler(event, data);
     d3.select(event.target.parentNode)
-      .attr("opacity", "0.5")
+      .attr("opacity", linkOpacity)
       .attr("stroke", strokeColor)
       .attr("fill", strokeColor);
   });
@@ -163,7 +158,7 @@ const visualizeNodes = (svg, data, locMap, flowMode, toolTipHandler, contextMenu
       d3.selectAll(".link")
         .attr("stroke", strokeColor)
         .attr("fill", strokeColor)
-        .attr("opacity", 0.5);
+        .attr("opacity", linkOpacity);
     })
     .on("click", (event, countryCode) => {
       contextMenuHandler(event, countryCode);
@@ -171,78 +166,13 @@ const visualizeNodes = (svg, data, locMap, flowMode, toolTipHandler, contextMenu
 
 };
 
-const avoidLinkOverlaps = (links) => {
-  // handle overlapping links
-  links.forEach((link) => {
-    // for each link,
-    // find other links with same target+source or source+target
-    var overlaps = links.filter(
-      (l) =>
-        (l.source === link.source && l.target === link.target) ||
-        (l.source === link.target && l.target === link.source)
-    );
-
-    overlaps.forEach((s, i) => {
-      let sameIndex = i + 1,
-        sameTotal = overlaps.length,
-        sameTotalHalf = sameTotal / 2,
-        sameUneven = sameTotal % 2 !== 0,
-        sameLowerHalf = sameIndex <= sameTotalHalf,
-        sameLinkDirection =
-          s.source === link.source && s.target === link.target;
-
-      // console.log('(sameIndex - Math.ceil(sameTotalHalf)',(sameIndex - Math.ceil(sameTotalHalf)), sameTotal, sameIndex);
-      s.route = {
-        sameIndex,
-        sameTotal,
-        sameTotalHalf,
-        sameUneven,
-        sameLowerHalf,
-        sameLinkDirection,
-        sameMiddleLink:
-          sameUneven === true && Math.ceil(sameTotalHalf) === sameIndex,
-        sameArcDirection: sameLowerHalf
-          ? sameLinkDirection
-            ? 0
-            : 1
-          : sameLinkDirection
-          ? 1
-          : 0,
-        sameIndexCorrected: sameLowerHalf
-          ? sameIndex
-          : sameIndex - Math.ceil(sameTotalHalf)
-      };
-    });
-  });
-
-  // maxnimum number of overlaps
-  // const maxSameObj = links.reduce((prev, current) => {
-  //   return current.sameTotal > prev.sameTotal ? current : prev;
-  // });
-  //const maxSame = maxSameObj.sameTotal;
-  let routes = {};
-  links.forEach((d, i) => {
-    d.route.maxSameHalf = 0.8; //Math.floor(maxSame / 3);
-    routes[i] = d.route;
-  });
-
-  return routes;
-};
-
-const linkArc = (d, s, t) => {
-  let [sx, sy] = s;
-  let [tx, ty] = t;
-  var dx = tx - sx,
-    dy = ty - sy,
-    dr = Math.sqrt(dx * dx + dy * dy),
-    unevenCorrection = d.sameUneven ? 0 : 0.5,
-    //arc = ((0.8 - Math.random()/3)  * dr) / (d.sameIndexCorrected - unevenCorrection);
-    arc = (d.maxSameHalf * dr) / (d.sameIndexCorrected - unevenCorrection);
-  if (d.sameMiddleLink) {
-    return `M${sx},${sy}L${(sx + tx) / 2},${(sy + ty) / 2} ${tx},${ty}`;
-  } else {
-    return `M${sx},${sy}A${arc},${arc} 0 0,${d.sameArcDirection} ${tx},${ty}`;
-  }
+const linkArc = (s, t) => {
+  const [sx, sy] = s;
+  const [tx, ty] = t;
+  const dx = tx - sx;
+  const dy = ty - sy;
+  const dr = curveFactor * Math.sqrt(dx * dx + dy * dy);
+  return `M${sx},${sy}A${dr},${dr} 0 0 1 ${tx},${ty}`;
 };
 
 export { visualizeGeoFlow };
