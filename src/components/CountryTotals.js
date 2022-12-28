@@ -1,7 +1,7 @@
 import { useD3 } from './useD3';
 import React from 'react';
 import BarChart from './charts/BarChart';
-import { FlowMode, humanFormatNumber } from './util';
+import { FlowMode, humanFormatNumber } from './mappings';
 import SVGMenu from './SVGMenu';
 
 function CountryTotals({data, flowMode}) {

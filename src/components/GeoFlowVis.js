@@ -1,12 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useD3 } from './useD3';
-import * as d3 from 'd3';
-import * as d3_geo from 'd3-geo-projection';
-import { visualizeLinks } from './LinkVis';
-import { FlowMode, humanFormatNumber } from './util';
+import { visualizeGeoFlow } from './LinkVis';
+import { humanFormatNumber } from './mappings';
 import SVGMenu from './SVGMenu';
 
-function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode, 
+function GeoFlowVis({ filteredData, countryMap, locationMapping, flowMode, 
       selectAsSource, selectAsTarget }) {
   const [tooltipData, setTooltipData] = useState(null);
   const refContextMenu = useRef();
@@ -26,43 +24,7 @@ function GeoFlowVis({ countryMap, filteredData, locationMapping, flowMode,
   const refSVG = useD3(
     (svg) => {
       console.log("RENDERING", filteredData, countryMap);
-
-      // Clean up
-      svg.selectAll(".link").remove();
-      svg.selectAll(".node").remove();
-      svg.select(".map").selectAll(".country").remove();
-
-      const projection = d3_geo.geoAitoff();
-      const path = d3.geoPath(projection);
-
-      const colorScale = filteredData.minTotalWeight !== undefined ?
-         d3.scaleSymlog(d3.interpolateBlues)
-          .domain([0, filteredData.minTotalWeight, filteredData.maxTotalWeight])
-          .range(d3.schemeBlues[3]) :
-        () => "#ccc";
-
-      // Render base map
-      svg
-        .select(".map")
-        .selectAll(".country")
-        .data(countryMap.features)
-        .enter()
-        .append("path")
-        .attr("class", "country")
-        .attr("d", path)
-        .attr("fill", function (d) {
-          const total = filteredData.totals.find(t => t.countryCode === d.properties.ISO2);
-          d.weight = total ? (flowMode === FlowMode.Inflow ? total.weight_in : total.weight_out) : 0;
-          if (isNaN(d.weight)) d.weight = 0;
-          return colorScale(d.weight);
-        })
-        .attr("stroke", "white")
-        .attr("stroke-width", 0.4);
-
-      // Render links
-      if (filteredData.links.length > 0) {
-        visualizeLinks(filteredData, projection, svg, locationMapping, showTooltip, flowMode, showContextMenu);
-      }
+      visualizeGeoFlow(svg, filteredData, countryMap, locationMapping, flowMode, showTooltip, showContextMenu);
     },
   [filteredData, flowMode]);
 

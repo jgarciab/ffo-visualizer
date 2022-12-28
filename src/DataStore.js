@@ -1,6 +1,6 @@
 import * as dfd from 'danfojs';
 import { makeAutoObservable, runInAction } from 'mobx';
-import { FlowMode, SourceTargetOperator } from './components/util';
+import { FlowMode, SourceTargetOperator } from './components/mappings';
 import { getLocationNames } from './GeoData';
 
 const COLUMN_SOURCE = 'source';

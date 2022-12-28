@@ -1,7 +1,7 @@
 import { useD3 } from './useD3';
 import React from 'react';
 import LineChart from './charts/LineChart';
-import { humanFormatNumber } from './util';
+import { humanFormatNumber } from './mappings';
 import SVGMenu from './SVGMenu';
 
 function TimeSeriesChart({data}) {

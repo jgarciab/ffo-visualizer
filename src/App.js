@@ -8,7 +8,7 @@ import MultiSelect from './components/MultiSelect';
 import GeoFlowVis from './components/GeoFlowVis';
 import CountryTotals from './components/CountryTotals';
 import TimeSeriesChart from './components/TimeSeriesChart';
-import { FlowMode, SourceTargetOperator } from './components/util';
+import { FlowMode, SourceTargetOperator } from './components/mappings';
 
 const App = observer(() => {
   const dataStore = useLocalObservable(() => new DataStore());
