@@ -1,0 +1,21 @@
+{
+  "creators": [
+    {
+      "affiliation": "Netherlands eScience Center",
+      "name": "Kok, Peter",
+      "orcid": "0000-0002-6630-7326"
+    },
+    {
+      "affiliation": "University of Amsterdam",
+      "name": "Garcia-Bernardo, Javier",
+      "orcid": "0000-0002-6119-1790"
+    },
+    {
+      "affiliation": "University of Amsterdam",
+      "name": "Babic, Milan",
+      "orcid": "0000-0002-9179-8120"
+    }
+  ],
+  "description": "Visualizes any type of flow between countries. Takes a CSV as input, applies filtering and aggregation to show relations and data in a number of visualizations.",
+  "title": "Geoflow Visualizer"
+}

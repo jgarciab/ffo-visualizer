@@ -1,0 +1,30 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Geoflow Visualizer
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - orcid: 'https://orcid.org/0000-0002-6630-7326'
+    given-names: Peter
+    family-names: Kok
+    affiliation: Netherlands eScience Center
+  - orcid: 'https://orcid.org/0000-0002-6119-1790'
+    given-names: Javier
+    family-names: Garcia-Bernardo
+    affiliation: University of Amsterdam
+  - orcid: 'https://orcid.org/0000-0002-9179-8120'
+    given-names: Milan
+    family-names: Babic
+    affiliation: University of Amsterdam
+repository-code: >-
+  https://github.com/States-as-fossil-fuel-owners/ffo-visualizer
+url: >-
+  https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/
+abstract: >-
+  Visualizes any type of flow between countries. Takes a CSV
+  as input, applies filtering and aggregation to show
+  relations and data in a number of visualizations.
