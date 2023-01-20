@@ -15,11 +15,11 @@ authors:
   - orcid: 'https://orcid.org/0000-0002-6119-1790'
     given-names: Javier
     family-names: Garcia-Bernardo
-    affiliation: University of Amsterdam
+    affiliation: Utrecht University
   - orcid: 'https://orcid.org/0000-0002-9179-8120'
     given-names: Milan
     family-names: Babic
-    affiliation: University of Amsterdam
+    affiliation: Roskilde University
 repository-code: >-
   https://github.com/States-as-fossil-fuel-owners/ffo-visualizer
 url: >-
