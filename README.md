@@ -7,7 +7,7 @@ Visualizes any type of flow between countries. Takes a CSV as input, applies fil
 
 # Demo
 
-The latest version of this tool is available at [https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/](https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/)
+The latest version of this tool is available at [https://geoflow-visualizer.github.io/geoflow-visualizer/](https://geoflow-visualizer.github.io/geoflow-visualizer/)
 
 ## Requirements
 
