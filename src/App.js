@@ -106,7 +106,7 @@ const App = observer(() => {
           </div>
 
           {/* Map visualization */}
-          <div className="">
+          <div>
             <GeoFlowVis countryMap={countryMap} filteredData={dataStore.nodesAndLinks}
               locationMapping={locationMapping} flowMode={dataStore.flowMode}
               selectAsSource={dataStore.selectAsSource.bind(dataStore)}

@@ -21,9 +21,9 @@ authors:
     family-names: Babic
     affiliation: Roskilde University
 repository-code: >-
-  https://github.com/States-as-fossil-fuel-owners/ffo-visualizer
+  https://github.com/geoflow-visualizer/geoflow-visualizer
 url: >-
-  https://states-as-fossil-fuel-owners.github.io/ffo-visualizer/
+  https://geoflow-visualizer.github.io/geoflow-visualizer/
 abstract: >-
   Visualizes any type of flow between countries. Takes a CSV
   as input, applies filtering and aggregation to show

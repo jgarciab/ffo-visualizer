@@ -1,8 +1,8 @@
 {
-  "name": "ffo-visualizer2",
+  "name": "geoflow-visualizer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "/ffo-visualizer",
+  "homepage": "/geoflow-visualizer",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",

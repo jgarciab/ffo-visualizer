@@ -36,8 +36,8 @@ export default class DataStore {
   selectedTargets = [];
   selectedCategories = {};
   flowMode = FlowMode.Outflow;
-  _topN = 20;
-  stickTopNToMax = true;
+  _topN = 100;
+  stickTopNToMax = false;
 
 
   constructor() {
