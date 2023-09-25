@@ -26,7 +26,7 @@ const projection = () => {
 }
 
 const linkColor = (links) => {
-  return d => ["#ff9100"];
+  return d => ["#e35b12"]; 
 };
 
 const linkOpacity = 0.6;
